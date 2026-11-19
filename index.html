@@ -222,6 +222,21 @@ blockquote.twitter-tweet > a{display:inline-block;margin-top:8px;font-family:var
 .thread .say .mono{color:var(--who)}
 .thread h4{font-family:var(--display);font-weight:800;font-size:clamp(24px,3vw,36px);line-height:1.02;letter-spacing:-.03em;margin:6px 0 8px;color:var(--band-ink)}
 .thread .say p{color:var(--band-muted);max-width:36ch}
+.thread h4.ov{font-size:clamp(20px,2.2vw,27px);line-height:1.18;letter-spacing:-.02em;max-width:24ch}
+.thread > li.r .say h4.ov{margin-left:auto}
+.thread > li.tbc{--who:var(--band-muted)}
+.tw-tbc{border:2px dashed #ffffff40;border-radius:18px;padding:14px 16px 12px;color:#71767b;font-family:var(--body);background:#ffffff08}
+.tw-tbc .tw-head{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.tw-tbc .av{width:40px;height:40px;border-radius:50%;border:2px dashed #ffffff40;display:grid;place-items:center;font:800 16px/1 var(--display);font-style:normal;color:var(--band-muted);flex:none}
+.tw-tbc .nm{display:flex;flex-direction:column;line-height:1.2}
+.tw-tbc .nm b{font-size:15px;color:var(--band-ink)}
+.tw-tbc .nm span{font-size:14px}
+.tw-tbc p{font:800 clamp(44px,6vw,72px)/1 var(--display);letter-spacing:-.04em;color:var(--band-ink);padding:18px 0 14px}
+.tw-tbc .foot{display:block;padding-top:10px;border-top:1px dashed #ffffff30;font-size:14px}
+.findout{margin-top:clamp(54px,7vw,90px);text-align:center}
+.findout > .mono{font-size:14px;color:var(--accent)}
+.findout .count{text-align:left}
+.findout .tile span{margin-top:8px}
 .beef blockquote.twitter-tweet{background:#16181c;border:1px solid #2f3336;border-radius:18px;padding:14px 16px 12px;color:#e7e9ea;box-shadow:0 0 0 4px color-mix(in srgb,var(--who) 30%,transparent),0 14px 30px #0007;font-family:var(--body)}
 .beef blockquote.twitter-tweet .tw-head{display:flex;align-items:center;gap:10px;margin-bottom:8px}
 .beef blockquote.twitter-tweet .av{width:40px;height:40px;border-radius:50%;background:var(--who);color:#111;display:grid;place-items:center;font:800 14px/1 var(--display);font-style:normal;flex:none}
@@ -417,81 +432,89 @@ footer strong{color:var(--ink)}
         <ol class="thread">
           <li class="mkbhd l">
             <div class="embed"><blockquote class="twitter-tweet mkbhd" data-conversation="none" data-dnt="true" data-theme="dark"><div class="tw-head"><i class="av" aria-hidden="true">MB</i><span class="nm"><b>Marques Brownlee</b><span>@MKBHD</span></span></div><p lang="en" dir="ltr">NEW VIDEO - My full Tesla Robotaxi reaction, and thoughts on the Optimus robot</p><a href="https://twitter.com/MKBHD/status/1845972515216077292">Oct 14, 2024 · View on X</a></blockquote></div>
-            <div class="say"><span class="mono">Oct 14, 2024 · Marques</span><h4>Where it started</h4><p>His Robotaxi reaction video, the one with the promise in it.</p></div>
+            <div class="say"><span class="mono">Oct 14, 2024 · Marques</span><h4 class="ov">Fresh off Tesla&#x27;s Robotaxi reveal, Marques bets his hair that a $30k Cybercab won&#x27;t reach regular buyers by the end of 2026.</h4></div>
           </li>
           <li class="mkbhd r">
             <div class="embed"><blockquote class="twitter-tweet mkbhd" data-conversation="none" data-dnt="true" data-theme="dark"><div class="tw-head"><i class="av" aria-hidden="true">MB</i><span class="nm"><b>Marques Brownlee</b><span>@MKBHD</span></span></div><p lang="en" dir="ltr">Oh Roadster is so cooked</p><a href="https://twitter.com/MKBHD/status/2016650493297152231">Jan 28, 2026 · View on X</a></blockquote></div>
-            <div class="say"><span class="mono">Jan 28, 2026 · Marques</span><h4>&quot;Roadster is so cooked&quot;</h4><p>Marques takes a shot at another Tesla promise.</p></div>
+            <div class="say"><span class="mono">Jan 28, 2026 · Marques</span><h4 class="ov">With the Roadster years late, Marques points at Tesla&#x27;s track record on deadlines.</h4></div>
           </li>
           <li class="elon l">
             <div class="embed"><blockquote class="twitter-tweet elon" data-conversation="none" data-dnt="true" data-theme="dark"><div class="tw-head"><i class="av" aria-hidden="true">EM</i><span class="nm"><b>Elon Musk</b><span>@elonmusk</span></span></div><p lang="en" dir="ltr">@MKBHD New Roadster will be incredible</p><a href="https://twitter.com/elonmusk/status/2016879551138120027">Jan 29, 2026 · View on X</a></blockquote></div>
-            <div class="say"><span class="mono">Jan 29, 2026 · Musk</span><h4>Elon bites</h4><p>Musk replies to Marques directly.</p></div>
+            <div class="say"><span class="mono">Jan 29, 2026 · Musk</span><h4 class="ov">Elon jumps into the replies to defend the Roadster, and the two are officially sparring.</h4></div>
           </li>
           <li class="fan r">
             <div class="embed"><blockquote class="twitter-tweet fan" data-conversation="none" data-dnt="true" data-theme="dark"><div class="tw-head"><i class="av" aria-hidden="true">WM</i><span class="nm"><b>Whole Mars Catalog</b><span>@wholemars</span></span></div><p lang="en" dir="ltr">(image) Tesla: First Cybercab off the production line</p><a href="https://twitter.com/wholemars/status/2023865688398700968">Feb 17, 2026 · View on X</a></blockquote></div>
-            <div class="say"><span class="mono">Feb 17, 2026 · @wholemars</span><h4>The first Cybercab</h4><p>The first production Cybercab rolls off the line in Texas.</p></div>
+            <div class="say"><span class="mono">Feb 17, 2026 · @wholemars</span><h4 class="ov">Cybercab production starts in Texas, giving Tesla fans their first real ammo.</h4></div>
           </li>
           <li class="elon l">
             <div class="embed"><blockquote class="twitter-tweet elon" data-conversation="none" data-dnt="true" data-theme="dark"><div class="tw-head"><i class="av" aria-hidden="true">EM</i><span class="nm"><b>Elon Musk</b><span>@elonmusk</span></span></div><p lang="en" dir="ltr">@wholemars Gonna happen 😂</p><a href="https://twitter.com/elonmusk/status/2023875104435007573">Feb 17, 2026 · View on X</a></blockquote></div>
-            <div class="say"><span class="mono">Feb 17, 2026 · Musk</span><h4>&quot;Gonna happen&quot;</h4><p>Musk says the bet is coming for Marques&#x27;s hair.</p></div>
+            <div class="say"><span class="mono">Feb 17, 2026 · Musk</span><h4 class="ov">Elon makes it clear he thinks Marques&#x27;s hair is on borrowed time.</h4></div>
           </li>
           <li class="fan r">
             <div class="embed"><blockquote class="twitter-tweet fan" data-conversation="none" data-dnt="true" data-theme="dark"><div class="tw-head"><i class="av" aria-hidden="true">DL</i><span class="nm"><b>Dillon Loomis</b><span>@DillonLoomis</span></span></div><p lang="en" dir="ltr">Elon - to be clear - the bet was that Tesla wouldn&#x27;t sell a Cybercab to a customer for $30k or less before 2027. Are…</p><a href="https://twitter.com/DillonLoomis/status/2023888480930001221">Feb 17, 2026 · View on X</a></blockquote></div>
-            <div class="say"><span class="mono">Feb 17, 2026 · @DillonLoomis</span><h4>&quot;To be clear…&quot;</h4><p>Someone spells out the exact terms and asks Musk if he&#x27;s sure.</p></div>
+            <div class="say"><span class="mono">Feb 17, 2026 · @DillonLoomis</span><h4 class="ov">A fan pins down the exact terms so nobody can wiggle out later.</h4></div>
           </li>
           <li class="elon l">
             <div class="embed"><blockquote class="twitter-tweet elon" data-conversation="none" data-dnt="true" data-theme="dark"><div class="tw-head"><i class="av" aria-hidden="true">EM</i><span class="nm"><b>Elon Musk</b><span>@elonmusk</span></span></div><p lang="en" dir="ltr">@DillonLoomis Yes</p><a href="https://twitter.com/elonmusk/status/2023900808979386438">Feb 17, 2026 · View on X</a></blockquote></div>
-            <div class="say"><span class="mono">Feb 17, 2026 · Musk</span><h4>&quot;Yes&quot;</h4><p>One word. He&#x27;s sure.</p></div>
+            <div class="say"><span class="mono">Feb 17, 2026 · Musk</span><h4 class="ov">Elon confirms he expects Tesla to hit those terms on time.</h4></div>
           </li>
           <li class="mkbhd r">
             <div class="embed"><blockquote class="twitter-tweet mkbhd" data-conversation="none" data-dnt="true" data-theme="dark"><div class="tw-head"><i class="av" aria-hidden="true">MB</i><span class="nm"><b>Marques Brownlee</b><span>@MKBHD</span></span></div><p lang="en" dir="ltr">(reaction GIF)</p><a href="https://twitter.com/MKBHD/status/2024124428477464704">Feb 18, 2026 · View on X</a></blockquote></div>
-            <div class="say"><span class="mono">Feb 18, 2026 · Marques</span><h4>Marques reacts</h4><p>A reaction GIF says it all.</p></div>
+            <div class="say"><span class="mono">Feb 18, 2026 · Marques</span><h4 class="ov">Marques answers without words, and he doesn&#x27;t look worried.</h4></div>
           </li>
           <li class="elon l">
             <div class="embed"><blockquote class="twitter-tweet elon" data-conversation="none" data-dnt="true" data-theme="dark"><div class="tw-head"><i class="av" aria-hidden="true">EM</i><span class="nm"><b>Elon Musk</b><span>@elonmusk</span></span></div><p lang="en" dir="ltr">@MKBHD 😂</p><a href="https://twitter.com/elonmusk/status/2024172817340613046">Feb 18, 2026 · View on X</a></blockquote></div>
-            <div class="say"><span class="mono">Feb 18, 2026 · Musk</span><h4>😂</h4><p>Musk laughs back.</p></div>
+            <div class="say"><span class="mono">Feb 18, 2026 · Musk</span><h4 class="ov">Elon laughs it off, and the bet goes quiet for six months.</h4></div>
           </li>
           <li class="mkbhd r">
             <div class="embed"><blockquote class="twitter-tweet mkbhd" data-conversation="none" data-dnt="true" data-theme="dark"><div class="tw-head"><i class="av" aria-hidden="true">MB</i><span class="nm"><b>Marques Brownlee</b><span>@MKBHD</span></span></div><p lang="en" dir="ltr">Tesla&#x27;s event today was a little weird</p><a href="https://twitter.com/MKBHD/status/2095683125242118393">Sep 3, 2026 · View on X</a></blockquote></div>
-            <div class="say"><span class="mono">Sep 3, 2026 · Marques</span><h4>&quot;A little weird&quot;</h4><p>Tesla&#x27;s September event puts the Cybercab in Robotaxi, but still doesn&#x27;t sell it.</p></div>
+            <div class="say"><span class="mono">Sep 3, 2026 · Marques</span><h4 class="ov">Tesla puts the Cybercab into Robotaxi service at its September event but still won&#x27;t sell one, and Marques isn&#x27;t impressed.</h4></div>
           </li>
           <li class="fan l">
             <div class="embed"><blockquote class="twitter-tweet fan" data-conversation="none" data-dnt="true" data-theme="dark"><div class="tw-head"><i class="av" aria-hidden="true">CD</i><span class="nm"><b>cb doge</b><span>@cb_doge</span></span></div><p lang="en" dir="ltr">BREAKING: MKBHD uploaded a new video saying he’ll still shave his head if Tesla delivers a $30,000 Cybercab to a cust…</p><a href="https://twitter.com/cb_doge/status/2095842277021372680">Sep 4, 2026 · View on X</a></blockquote></div>
-            <div class="say"><span class="mono">Sep 4, 2026 · @cb_doge</span><h4>He doubles down</h4><p>A new video: the bet still stands.</p></div>
+            <div class="say"><span class="mono">Sep 4, 2026 · @cb_doge</span><h4 class="ov">In a new video, Marques says the bet still stands.</h4></div>
           </li>
           <li class="elon r">
             <div class="embed"><blockquote class="twitter-tweet elon" data-conversation="none" data-dnt="true" data-theme="dark"><div class="tw-head"><i class="av" aria-hidden="true">EM</i><span class="nm"><b>Elon Musk</b><span>@elonmusk</span></span></div><p lang="en" dir="ltr">@cb_doge @MKBHD I guess he really wants to shave his head 🤷‍♂️</p><a href="https://twitter.com/elonmusk/status/2095862416781283697">Sep 4, 2026 · View on X</a></blockquote></div>
-            <div class="say"><span class="mono">Sep 4, 2026 · Musk</span><h4>&quot;He really wants to shave his head&quot;</h4><p>Musk shrugs.</p></div>
+            <div class="say"><span class="mono">Sep 4, 2026 · Musk</span><h4 class="ov">Elon treats the renewed bet as Marques volunteering for the clippers.</h4></div>
           </li>
           <li class="mkbhd l">
             <div class="embed"><blockquote class="twitter-tweet mkbhd" data-conversation="none" data-dnt="true" data-theme="dark"><div class="tw-head"><i class="av" aria-hidden="true">MB</i><span class="nm"><b>Marques Brownlee</b><span>@MKBHD</span></span></div><p lang="en" dir="ltr">Hm. Interesting 😅</p><a href="https://twitter.com/MKBHD/status/2121401946112483519">Nov 13, 2026 · View on X</a></blockquote></div>
-            <div class="say"><span class="mono">Nov 13, 2026 · Marques</span><h4>&quot;Hm. Interesting&quot;</h4><p>Tesla opens invite-only Cybercab orders at $29,990.</p></div>
+            <div class="say"><span class="mono">Nov 13, 2026 · Marques</span><h4 class="ov">Tesla opens invite-only Cybercab orders at $29,990, just under the line, and Marques notices.</h4></div>
           </li>
           <li class="mkbhd r">
             <div class="embed"><blockquote class="twitter-tweet mkbhd" data-conversation="none" data-dnt="true" data-theme="dark"><div class="tw-head"><i class="av" aria-hidden="true">MB</i><span class="nm"><b>Marques Brownlee</b><span>@MKBHD</span></span></div><p lang="en" dir="ltr">Alright chat I’m in. Here’s the deal. Cybercab order page is live. Invite only. Must accept delivery to one of these…</p><a href="https://twitter.com/MKBHD/status/2121420350160302304">Nov 13, 2026 · View on X</a></blockquote></div>
-            <div class="say"><span class="mono">Nov 13, 2026 · Marques</span><h4>&quot;Alright chat I&#x27;m in&quot;</h4><p>He has an invite, and reads the fine print.</p></div>
+            <div class="say"><span class="mono">Nov 13, 2026 · Marques</span><h4 class="ov">Marques gets an invite and walks through the fine print: Texas cities only, a $1,000 deposit and a required subscription.</h4></div>
           </li>
           <li class="mkbhd l">
             <div class="embed"><blockquote class="twitter-tweet mkbhd" data-conversation="none" data-dnt="true" data-theme="dark"><div class="tw-head"><i class="av" aria-hidden="true">MB</i><span class="nm"><b>Marques Brownlee</b><span>@MKBHD</span></span></div><p lang="en" dir="ltr">The memes are everywhere, so let’s go back over the bet: Cybercab publicly available for under $30k by the end of 202…</p><a href="https://twitter.com/MKBHD/status/2121423916006617237">Nov 13, 2026 · View on X</a></blockquote></div>
-            <div class="say"><span class="mono">Nov 13, 2026 · Marques</span><h4>&quot;Let&#x27;s go back over the bet&quot;</h4><p>Why his hair is safe: no deliveries, invite-only, and a required subscription.</p></div>
+            <div class="say"><span class="mono">Nov 13, 2026 · Marques</span><h4 class="ov">Marques argues his hair is safe: nothing has been delivered, orders are invite-only, and the subscription pushes the real cost past $30k.</h4></div>
           </li>
           <li class="fan r">
             <div class="embed"><blockquote class="twitter-tweet fan" data-conversation="none" data-dnt="true" data-theme="dark"><div class="tw-head"><i class="av" aria-hidden="true">WM</i><span class="nm"><b>Whole Mars Catalog</b><span>@wholemars</span></span></div><p lang="en" dir="ltr">I cannot believe he’s still trying to claim he was right. Marques, be a man and honor your word. Tesla showed you the…</p><a href="https://twitter.com/wholemars/status/2121435803540730109">Nov 13, 2026 · View on X</a></blockquote></div>
-            <div class="say"><span class="mono">Nov 13, 2026 · @wholemars</span><h4>&quot;Be a man&quot;</h4><p>Tesla fans want the clippers out.</p></div>
+            <div class="say"><span class="mono">Nov 13, 2026 · @wholemars</span><h4 class="ov">Tesla fans say $29,990 means he lost and it&#x27;s time to pay up.</h4></div>
           </li>
           <li class="elon l">
             <div class="embed"><blockquote class="twitter-tweet elon" data-conversation="none" data-dnt="true" data-theme="dark"><div class="tw-head"><i class="av" aria-hidden="true">EM</i><span class="nm"><b>Elon Musk</b><span>@elonmusk</span></span></div><p lang="en" dir="ltr">@MKBHD It will be available nationwide, as we receive regulatory approval. But the monthly fee is too high. Should ma…</p><a href="https://twitter.com/elonmusk/status/2121492849002987844">Nov 14, 2026 · View on X</a></blockquote></div>
-            <div class="say"><span class="mono">Nov 14, 2026 · Musk</span><h4>Even Elon says the fee is too high</h4><p>Musk replies to Marques and admits the price is off.</p></div>
+            <div class="say"><span class="mono">Nov 14, 2026 · Musk</span><h4 class="ov">Elon promises a nationwide rollout once regulators sign off, but admits the monthly fee is too high.</h4></div>
           </li>
           <li class="elon r">
             <div class="embed"><blockquote class="twitter-tweet elon" data-conversation="none" data-dnt="true" data-theme="dark"><div class="tw-head"><i class="av" aria-hidden="true">EM</i><span class="nm"><b>Elon Musk</b><span>@elonmusk</span></span></div><p lang="en" dir="ltr">@wholemars He’s a chicken</p><a href="https://twitter.com/elonmusk/status/2121495305288122807">Nov 14, 2026 · View on X</a></blockquote></div>
-            <div class="say"><span class="mono">Nov 14, 2026 · Musk</span><h4>&quot;He&#x27;s a chicken&quot;</h4><p>And then the insult.</p></div>
+            <div class="say"><span class="mono">Nov 14, 2026 · Musk</span><h4 class="ov">With Marques not budging, Elon resorts to name-calling.</h4></div>
           </li>
           <li class="mkbhd l">
             <div class="embed"><blockquote class="twitter-tweet mkbhd" data-conversation="none" data-dnt="true" data-theme="dark"><div class="tw-head"><i class="av" aria-hidden="true">MB</i><span class="nm"><b>Marques Brownlee</b><span>@MKBHD</span></span></div><p lang="en" dir="ltr">I’m tryna see something</p><a href="https://twitter.com/MKBHD/status/2121718531398201484">Nov 14, 2026 · View on X</a></blockquote></div>
-            <div class="say"><span class="mono">Nov 14, 2026 · Marques</span><h4>He orders one</h4><p>Marques posts his own confirmed Cybercab order.</p></div>
+            <div class="say"><span class="mono">Nov 14, 2026 · Marques</span><h4 class="ov">Marques puts down a deposit himself, so if Tesla delivers, his own car settles it.</h4></div>
+          </li>
+          <li class="tbc r">
+            <div class="embed"><div class="tw-tbc" aria-label="The next post hasn&#x27;t happened yet"><div class="tw-head"><i class="av" aria-hidden="true">?</i><span class="nm"><b>To be continued</b><span>@???</span></span></div><p>TBC</p><span class="foot">Dec 31, 2026 · Not posted yet</span></div></div>
+            <div class="say"><span class="mono">Dec 31, 2026 · The deadline</span><h4 class="ov">Will Tesla deliver a Cybercab to a regular buyer before December 31, 2026? Will Marques get to keep his hair?</h4></div>
           </li>
         </ol>
+      </div>
+      <div class="findout" aria-label="Time left on the bet">
+        <span class="mono">Find out in</span>
+        <div class="count"><div class="tile"><b id="cd2-d">--</b><span class="mono">Days</span></div><div class="tile"><b id="cd2-h">--</b><span class="mono">Hours</span></div><div class="tile"><b id="cd2-m">--</b><span class="mono">Minutes</span></div><div class="tile"><b id="cd2-s">--</b><span class="mono">Seconds</span></div></div>
       </div>
     </div>
   </section>
@@ -555,7 +578,7 @@ for (const f of document.querySelectorAll('.clip iframe[data-src]')) {
   function tick(){
     let ms = end - Date.now();
     if (ms <= 0){
-      ['d','h','m','s'].forEach(k=>el('cd-'+k).textContent='00');
+      ['d','h','m','s'].forEach(k=>{el('cd-'+k).textContent='00'; el('cd2-'+k).textContent='00';});
       el('answer').textContent = 'Deadline passed. Check the news.';
       return;
     }
@@ -564,6 +587,10 @@ for (const f of document.querySelectorAll('.clip iframe[data-src]')) {
     el('cd-h').textContent = pad(Math.floor(s%86400/3600));
     el('cd-m').textContent = pad(Math.floor(s%3600/60));
     el('cd-s').textContent = pad(s%60);
+    el('cd2-d').textContent = Math.floor(s/86400);
+    el('cd2-h').textContent = pad(Math.floor(s%86400/3600));
+    el('cd2-m').textContent = pad(Math.floor(s%3600/60));
+    el('cd2-s').textContent = pad(s%60);
     setTimeout(tick, 1000 - (Date.now()%1000));
   }
   tick();
