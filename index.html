@@ -145,8 +145,28 @@ kbd{display:inline-grid;place-items:center;min-width:22px;height:22px;padding:0 
 .nogl{position:absolute;inset:0;display:none;place-items:center;text-align:center;padding:24px;color:var(--muted);font-weight:600}
 
 /* shave game: timer + finish modal */
-.gtime{margin-left:auto;font-family:var(--mono);font-weight:700;font-size:13px;letter-spacing:0;text-transform:none;font-variant-numeric:tabular-nums;color:var(--muted)}
-.gtime.on{color:var(--accent)}
+.bigtime{position:absolute;left:50%;top:var(--bt-top,170px);transform:translateX(-50%);display:flex;align-items:center;gap:14px;pointer-events:none;white-space:nowrap;
+  background:color-mix(in srgb,var(--band) 78%,transparent);color:var(--band-ink);border-radius:18px;padding:8px 22px 9px;box-shadow:0 10px 30px #0006;backdrop-filter:blur(6px);transition:opacity .4s}
+.bigtime .lab{display:flex;flex-direction:column;gap:3px;text-align:right}
+.bigtime .mono{color:var(--band-muted);font-size:11px}
+.bigtime b{font-family:var(--mono);font-weight:700;font-size:clamp(40px,5vw,60px);line-height:1;letter-spacing:-.04em;font-variant-numeric:tabular-nums;min-width:4.1ch;text-align:left}
+.bigtime .hint2{font-size:12px;line-height:1.2;font-weight:600;color:var(--band-muted)}
+.bigtime.on b{color:var(--accent)}
+.bigtime.on .hint2,.bigtime.done .hint2{visibility:hidden}
+.bigtime.done b{color:var(--accent2)}
+.hero.story .bigtime,.hero.story .tops{opacity:0}
+.tops{position:absolute;right:28px;top:var(--tops-top,250px);width:210px;padding:10px 12px;border-radius:14px;background:color-mix(in srgb,var(--band) 70%,transparent);color:var(--band-ink);backdrop-filter:blur(4px);opacity:.9;transition:opacity .4s}
+.tops .mono{display:block;color:var(--band-muted);font-size:10px;margin-bottom:6px}
+.tops ol,.wtops{list-style:none;margin:0;padding:0;display:grid;gap:3px;font-size:13.5px;counter-reset:t}
+.tops li,.wtops li{display:grid;grid-template-columns:18px 1fr auto;gap:6px;align-items:baseline;counter-increment:t}
+.tops li::before,.wtops li::before{content:counter(t);font-family:var(--mono);font-size:11px;color:var(--band-muted)}
+.tops li span,.wtops li span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tops li b,.wtops li b{font-family:var(--mono);font-weight:700;font-size:12.5px}
+.tops li.me b,.wtops li.me b{color:var(--accent)}
+.tops .empty{display:block;font-size:13px;color:var(--band-muted)}
+@media (max-width:760px){.tops{display:none}.bigtime{padding:6px 16px 7px;border-radius:14px}.bigtime b{font-size:40px}.bigtime .hint2{font-size:11.5px}}
+.win .msg.err{color:var(--accent)}
+.win .step[hidden]{display:none}
 .btn.mute{padding:3px 9px;font-size:14px;line-height:1.2}
 .win{width:min(640px,calc(100% - 32px));max-height:calc(100dvh - 32px);overflow:auto;padding:0;border:1.5px solid var(--ink);border-radius:22px;background:var(--card);color:var(--ink);box-shadow:6px 6px 0 var(--ink)}
 .win::backdrop{background:#0f0c09cc;backdrop-filter:blur(4px)}
@@ -397,6 +417,8 @@ footer strong{color:var(--ink)}
       </div>
     </div>
   </div>
+  <div class="bigtime" id="bigtime" aria-label="Shave timer"><span class="lab"><span class="mono">Shave timer</span><span class="hint2" id="gtimeHint">Starts on your<br>first cut</span></span><b id="gtime">0.0s</b></div>
+  <aside class="tops" id="tops" aria-label="Top times on this device"><span class="mono">Top times · this device</span><ol id="topsList"></ol></aside>
   <div class="bubble" id="bubble" role="status" aria-live="polite"></div>
   <div class="ytpip" id="ytpip" aria-label="Source video"><div id="ytplayer"></div></div>
   <div class="story-cap" id="storyCap" aria-live="polite">
@@ -404,12 +426,11 @@ footer strong{color:var(--ink)}
     <div class="row"><span class="mono" id="storyCredit">Marques Brownlee, October 2024 · his own words, from <a href="https://x.com/cb_doge/status/2121390944872444379" target="_blank" rel="noopener">the clip</a></span><button type="button" id="storyClose">Close</button></div>
   </div>
   <div class="meter">
-    <div class="lbl"><span class="mono">Shave-o-meter</span><b id="pct">0%</b></div>
+    <div class="lbl"><span class="mono">Shave progress</span><b id="pct">0%</b></div>
     <div class="bar"><i id="barfill"></i></div>
     <div class="row">
       <button class="btn" id="regrow" type="button">Regrow hair</button>
       <button class="btn mute" id="mute" type="button" aria-label="Clipper sound" aria-pressed="false">&#x1F50A;</button>
-      <span class="gtime" id="gtime" title="Your shave time">0.0s</span>
     </div>
   </div>
   <div class="drive">
@@ -602,22 +623,28 @@ footer strong{color:var(--ink)}
 </footer>
 <dialog class="win" id="winDlg" aria-labelledby="winTitle">
   <button class="x" type="button" id="winClose" aria-label="Close">&times;</button>
-  <div class="in">
-    <span class="mono">Shaved.</span>
+  <form class="in step" id="step1" method="dialog" novalidate>
+    <span class="mono">Step 1 of 2 · Shaved.</span>
     <h2 id="winTitle">It took you <em id="winTime">0 seconds</em> to shave Marques' hair.</h2>
-    <p class="left" id="winLeft">He only has -- days left with it, if Tesla delivers.</p>
-    <canvas id="shareCv" width="1200" height="675" aria-label="Your share card"></canvas>
-    <label>Your name on the card
-      <input id="winName" type="text" maxlength="24" autocomplete="nickname" placeholder="Anonymous barber">
+    <p class="left" id="winLeft">He only has -- days left with his hair, if Tesla delivers.</p>
+    <label>Put your name on your time
+      <input id="winName" type="text" maxlength="24" autocomplete="nickname" placeholder="Your name" required>
     </label>
+    <p class="msg err" id="nameMsg" role="status"></p>
+    <div class="acts"><button class="btn hot" type="submit" id="winSaveName">Save my time &rarr;</button></div>
+    <div class="foot"><span id="winBest"></span><button type="button" class="again">Regrow and go again</button></div>
+  </form>
+  <div class="in step" id="step2" hidden>
+    <span class="mono">Step 2 of 2 · Share it</span>
+    <h2 id="winTitle2">Nice cut, <em id="winWho">barber</em>.</h2>
+    <canvas id="shareCv" width="1200" height="675" aria-label="Your share card"></canvas>
     <div class="acts">
       <button class="btn hot" type="button" id="winCopy">1. Copy card</button>
       <button class="btn hot" type="button" id="winPost">2. Post on X</button>
-      <button class="btn" type="button" id="winShare" hidden>Share</button>
       <button class="btn" type="button" id="winSave">Download</button>
     </div>
     <p class="msg" id="winMsg" role="status"></p>
-    <div class="foot"><span id="winBest"></span><button type="button" id="winAgain">Regrow and go again</button></div>
+    <div class="foot"><button type="button" id="winBack">Change name</button><button type="button" class="again">Regrow and go again</button></div>
   </div>
 </dialog>
 
@@ -1202,17 +1229,35 @@ function regrowAll(instant){
     if (mowedCount > HN * 0.05) say("Much better.", 0.3);
   }
   lastSaid = -1;
-  mowedCount = 0; won = false;
-  gameT0 = 0; gtimeEl.textContent = '0.0s'; gtimeEl.classList.remove('on');
+  mowedCount = 0; won = false; clearTimeout(winTimer); winTimer = 0;
+  gameT0 = 0; lastCut = 0; setTimer(0, 'idle');
   answerEl.classList.remove('won'); answerEl.textContent = 'No.';
   updateMeter();
 }
-let mowedCount = 0, won = false;
+let mowedCount = 0, won = false, winTimer = 0;
+// progress is the share of tufts that really are cut right now, never a running tally
+function countCut(){ let c = 0; for (let i = 0; i < NV; i++) if (hairT[i] > 0 && hairState[i] <= 0.4) c++; return c; }
 
 // ---------- the shave game: clipper buzz, a stopwatch from the first cut, and a share card at the end ----------
 const SITE = 'https://www.didmarquesshaveyet.com';
 const DEADLINE = Date.parse('2027-01-01T00:00:00-05:00');
-const gtimeEl = document.getElementById('gtime');
+const gtimeEl = document.getElementById('gtime'), bigtimeEl = document.getElementById('bigtime');
+function setTimer(ms, state){
+  gtimeEl.textContent = fmtShort(ms);
+  bigtimeEl.classList.toggle('on', state === 'on'); bigtimeEl.classList.toggle('done', state === 'done');
+}
+// the big timer sits just above the mower on his crown, and never over the title
+const topsEl = document.getElementById('tops');
+function placeHud(){
+  camera.updateProjectionMatrix();
+  const r = hero.getBoundingClientRect(), v = new THREE.Vector3(0, 2.32, 0).project(camera);
+  const crown = (1 - v.y) / 2 * r.height;
+  const sub = document.querySelector('.hud .timeleft') || document.querySelector('.hud .title');
+  const floor = sub ? sub.getBoundingClientRect().bottom - r.top + 10 : 120;
+  const top = Math.max(floor, crown - bigtimeEl.offsetHeight - 6);
+  hero.style.setProperty('--bt-top', top.toFixed(0) + 'px');
+  hero.style.setProperty('--tops-top', Math.max(floor, crown).toFixed(0) + 'px');
+}
 let gameT0 = 0, lastCut = 0;
 const daysLeft = () => Math.max(0, Math.floor((DEADLINE - Date.now()) / 86400000));
 function fmtShort(ms){ const s = ms / 1000; if (s < 60) return s.toFixed(1) + 's'; return Math.floor(s / 60) + ':' + String(Math.floor(s % 60)).padStart(2, '0'); }
@@ -1222,7 +1267,7 @@ function fmtWords(ms){
   const m = Math.floor(s / 60), r = Math.floor(s % 60);
   return m + (m === 1 ? ' minute' : ' minutes') + (r ? ' ' + r + (r === 1 ? ' second' : ' seconds') : '');
 }
-// clippers: a recorded buzz (assets/clipper.mp3, a seamless 1.6 s loop) played from memory so the loop never gaps
+// clippers: a low recorded hum (assets/clipper-low.mp3, a seamless 2.0 s loop) played from memory so the loop never gaps
 let buzz = null;
 let muted = (() => { try { return localStorage.getItem('dmsy-mute') === '1'; } catch (e) { return false; } })();
 function buzzInit(e){
@@ -1232,12 +1277,12 @@ function buzzInit(e){
   const ctx = voiceCtx();
   const out = ctx.createGain(); out.gain.value = 0; out.connect(ctx.destination);
   buzz = { ctx, out, src: null, level: 0, wob: 0 };
-  fetch('assets/clipper.mp3').then(r => r.arrayBuffer()).then(ab => new Promise((res, rej) => ctx.decodeAudioData(ab, res, rej))).then(buf => {
+  fetch('assets/clipper-low.mp3').then(r => r.arrayBuffer()).then(ab => new Promise((res, rej) => ctx.decodeAudioData(ab, res, rej))).then(buf => {
     // skip any encoder delay at the front so the loop points land on real audio
     const d = buf.getChannelData(0), lim = Math.min(d.length, Math.round(buf.sampleRate * 0.06));
     let i0 = 0; while (i0 < lim && Math.abs(d[i0]) < 0.01) i0++;
     const src = ctx.createBufferSource(); src.buffer = buf; src.loop = true;
-    src.loopStart = i0 / buf.sampleRate; src.loopEnd = Math.min(buf.duration, src.loopStart + 1.6);
+    src.loopStart = i0 / buf.sampleRate; src.loopEnd = Math.min(buf.duration, src.loopStart + 2.0);
     src.connect(out); src.start(0, src.loopStart);
     buzz.src = src;
   }).catch(() => {});
@@ -1254,7 +1299,7 @@ function buzzSet(level){
   if (Math.abs(level - buzz.level) > 0.003) { buzz.level = level; g.cancelScheduledValues(t); g.setValueAtTime(g.value, t); g.setTargetAtTime(level, t, 0.027); }   // ~80 ms in
   if (buzz.src && level > 0) {
     buzz.wob += 0.05;
-    const rate = 1 + 0.03 * (0.6 * Math.sin(buzz.wob * 1.3) + 0.4 * Math.sin(buzz.wob * 3.7 + 1));
+    const rate = 0.985 + 0.015 * (0.6 * Math.sin(buzz.wob * 1.3) + 0.4 * Math.sin(buzz.wob * 3.7 + 1));   // 0 to -3%, never sharper
     buzz.src.playbackRate.setTargetAtTime(rate, t, 0.1);
   }
 }
@@ -1308,7 +1353,7 @@ function drawCard(cv, { ms, name, days, img }){
   ctx.fillStyle = '#a8977f'; ctx.font = `500 20px ${M}`; ctx.fillText('DID MARQUES SHAVE YET?', 64, 86);
   if ('letterSpacing' in ctx) ctx.letterSpacing = '-1px';
   ctx.fillStyle = '#f4ecdc'; ctx.font = `800 60px ${D}`;
-  ctx.fillText('I shaved Marques’', 64, 178); ctx.fillText('head in', 64, 240);
+  fitFont(ctx, 'I shaved @MKBHD\u2019s', 800, 60, D, 520); ctx.fillText('I shaved @MKBHD\u2019s', 64, 178); ctx.font = `800 60px ${D}`; ctx.fillText('head in', 64, 240);
   const t = fmtShort(ms);
   if ('letterSpacing' in ctx) ctx.letterSpacing = '-6px';
   fitFont(ctx, t, 800, 200, D, 520); ctx.fillStyle = '#ff6b4f'; ctx.fillText(t, 58, 420);
@@ -1316,7 +1361,7 @@ function drawCard(cv, { ms, name, days, img }){
   const who = '— ' + (name || 'An anonymous barber');
   fitFont(ctx, who, 700, 36, D, 500); ctx.fillStyle = '#f4ecdc'; ctx.fillText(who, 64, 486);
   ctx.fillStyle = '#c9b9a3'; ctx.font = `500 26px ${B}`;
-  ctx.fillText(`He only has ${days} days left with it,`, 64, 552); ctx.fillText('if Tesla delivers.', 64, 586);
+  ctx.fillText(`He only has ${days} days left with his hair,`, 64, 552); ctx.fillText('if @Tesla delivers.', 64, 586);
   ctx.fillStyle = '#a8977f'; ctx.font = `500 19px ${M}`; ctx.fillText(SITE.replace('https://www.', ''), 64, H - 34);
   ctx.font = `800 32px ${D}`; const cta = 'Shave his head! →', cw = ctx.measureText(cta).width + 52;
   pill(ctx, W - 56 - cw, H - 106, cw, 66, 33); ctx.fillStyle = '#e2472f'; ctx.fill();
@@ -1328,26 +1373,54 @@ const winName = document.getElementById('winName'), winMsg = document.getElement
 const store = { get(k){ try { return localStorage.getItem(k); } catch (e) { return null; } }, set(k, v){ try { localStorage.setItem(k, v); } catch (e) {} } };
 let run = null;
 function cardBlob(){ return new Promise(res => shareCv.toBlob(res, 'image/png')); }
-function tweetText(){ return `I shaved Marques’ head in ${fmtWords(run.ms)} 💈 He only has ${run.days} days left with it, if Tesla delivers. Beat my time:`; }
+function tweetText(){ return `I shaved @MKBHD\u2019s head in ${fmtWords(run.ms)} \uD83D\uDC88 He only has ${run.days} days left with his hair, if @Tesla delivers. Beat my time:`; }
 function redraw(){ if (run) drawCard(shareCv, { ...run, name: winName.value.trim() }); }
+const step1 = document.getElementById('step1'), step2 = document.getElementById('step2'), nameMsg = document.getElementById('nameMsg');
+// this device's own top five
+function loadTops(){ try { const v = JSON.parse(localStorage.getItem('dmsy-tops') || '[]'); return Array.isArray(v) ? v.filter(t => t && typeof t.ms === 'number').slice(0, 5) : []; } catch (e) { return []; } }
+function saveTop(name, ms, id){
+  const tops = loadTops().filter(t => t.id !== id); tops.push({ name, ms, id });
+  tops.sort((a, b) => a.ms - b.ms);
+  try { localStorage.setItem('dmsy-tops', JSON.stringify(tops.slice(0, 5))); } catch (e) {}
+}
+function renderTops(meId){
+  const tops = loadTops(), ol = document.getElementById('topsList');
+  ol.replaceChildren(...tops.map(t => { const li = document.createElement('li'); if (t.id === meId) li.className = 'me';
+    const n = document.createElement('span'); n.textContent = t.name; const b = document.createElement('b'); b.textContent = fmtShort(t.ms); li.append(n, b); return li; }));
+  if (!tops.length) { const e = document.createElement('span'); e.className = 'empty'; e.textContent = 'No times yet. Set the first one.'; ol.append(e); }
+}
+renderTops();
+function showStep(n){ step1.hidden = n !== 1; step2.hidden = n !== 2; (n === 1 ? winName : document.getElementById('winCopy')).focus({ preventScroll: true }); }
 async function openWin(ms){
   const best = Number(store.get('dmsy-best')) || 0, isBest = !best || ms < best;
   if (isBest) store.set('dmsy-best', String(Math.round(ms)));
-  run = { ms, days: daysLeft(), img: snapshot(900) };
+  run = { ms, days: daysLeft(), img: snapshot(900), id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6) };
   document.getElementById('winTime').textContent = fmtWords(ms);
-  document.getElementById('winLeft').textContent = `He only has ${run.days} days left with it, if Tesla delivers.`;
+  document.getElementById('winLeft').textContent = `He only has ${run.days} days left with his hair, if Tesla delivers.`;
   document.getElementById('winBest').innerHTML = isBest ? (best ? 'New personal best <span class="best mono">Best</span>' : 'Your first shave. That’s your time to beat.') : `Your best: ${fmtWords(best)}`;
   winName.value = store.get('dmsy-name') || '';
-  winMsg.textContent = '';
-  document.getElementById('winShare').hidden = !(navigator.canShare && navigator.canShare({ files: [new File([''], 'x.png', { type: 'image/png' })] }));
+  winMsg.textContent = ''; nameMsg.textContent = '';
   keys.clear(); buzzSet(0);
-  drawCard(shareCv, { ...run, name: winName.value.trim() });
   if (!winDlg.open) winDlg.showModal();
-  await fontsReady(); redraw();
+  showStep(1);
+  fontsReady();
 }
-winName.addEventListener('input', () => { store.set('dmsy-name', winName.value.trim()); redraw(); });
+step1.addEventListener('submit', async e => {
+  e.preventDefault();
+  const name = winName.value.trim().replace(/\s+/g, ' ');
+  if (!name) { nameMsg.textContent = 'Add your name to save your time.'; winName.focus(); return; }
+  nameMsg.textContent = '';
+  store.set('dmsy-name', name);
+  saveTop(name, run.ms, run.id); renderTops(run.id);
+  document.getElementById('winWho').textContent = name;
+  await fontsReady();
+  drawCard(shareCv, { ...run, name });
+  showStep(2);
+});
+document.getElementById('winBack').addEventListener('click', () => showStep(1));
+winName.addEventListener('input', () => { if (winName.value.trim()) nameMsg.textContent = ''; });
 document.getElementById('winClose').addEventListener('click', () => winDlg.close());
-document.getElementById('winAgain').addEventListener('click', () => { winDlg.close(); regrowAll(); });
+for (const b of document.querySelectorAll('#winDlg .again')) b.addEventListener('click', () => { winDlg.close(); regrowAll(); });
 document.getElementById('winCopy').addEventListener('click', async () => {
   try {
     await navigator.clipboard.write([new ClipboardItem({ 'image/png': cardBlob() })]);
@@ -1361,9 +1434,6 @@ document.getElementById('winPost').addEventListener('click', () => {
 document.getElementById('winSave').addEventListener('click', async () => {
   const a = document.createElement('a'); a.href = URL.createObjectURL(await cardBlob()); a.download = 'i-shaved-marques.png'; a.click();
   setTimeout(() => URL.revokeObjectURL(a.href), 4000);
-});
-document.getElementById('winShare').addEventListener('click', async () => {
-  try { await navigator.share({ files: [new File([await cardBlob()], 'i-shaved-marques.png', { type: 'image/png' })], text: tweetText() + ' ' + SITE }); } catch (e) {}
 });
 window.__win = openWin;
 
@@ -1418,7 +1488,7 @@ function resize(){
   renderer.setSize(w, h, false);
   camera.aspect = w / h;
   // keep the whole head width in view on narrow screens
-  const fitW = camera.aspect < 0.8 ? 3.9 : 3.7, fitH = 4.1;
+  const fitW = camera.aspect < 0.8 ? 3.9 : 3.7, fitH = camera.aspect > 1.3 ? 5.2 : camera.aspect < 0.8 ? 4.4 : 4.8;
   const vfov = THREE.MathUtils.degToRad(camera.fov);
   const distH = (fitH/2) / Math.tan(vfov/2);
   const distW = (fitW/2) / (Math.tan(vfov/2) * camera.aspect);
@@ -1429,7 +1499,8 @@ function resize(){
   camera.position.copy(target).addScaledVector(dir, dist);
   camera.lookAt(target);
   // the title runs across the top, so the head sits centred and a little low
-  camera.setViewOffset(w, h, 0, camera.aspect > 1.3 ? -h*0.1 : camera.aspect < 0.8 ? h*0.03 : -h*0.08, w, h);
+  camera.setViewOffset(w, h, 0, camera.aspect > 1.3 ? -h*0.2 : camera.aspect < 0.8 ? -h*0.08 : -h*0.16, w, h);
+  placeHud();
   camera.updateProjectionMatrix();
 }
 new ResizeObserver(resize).observe(hero);
@@ -1626,7 +1697,7 @@ function frame(){
     const target = surfR + 0.02 + (speed > 0.05 ? 0 : tall);
     if (!dragged) mowH += (target - mowH) * (1 - Math.exp(-dt * (target < mowH ? 7 : 3)));
   }
-  if (speed > 0.05 && !dragged) {
+  if (speed > 0.05 && !dragged && !regrow && !won) {
     // everything under the deck goes to the scalp; the rim of the cut is left sloped
     const cosOut = Math.cos(CUT_R * 1.15), cosIn = Math.cos(CUT_R * 0.85);
     for (let i = 0; i < NV; i++) {
@@ -1636,7 +1707,7 @@ function frame(){
       let s = dd >= cosIn ? 0 : 1 - (dd - cosOut) / (cosIn - cosOut);
       if (s < 0.05) s = 0;
       if (s < hairState[i]) {
-        if (hairT[i] > 0 && hairState[i] > 0.4 && s <= 0.4) { mowedCount++; cutNow++; }
+        if (hairT[i] > 0 && hairState[i] > 0.4 && s <= 0.4) cutNow++;
         hairState[i] = s; writeHair(i); changed = true;
       }
     }
@@ -1644,6 +1715,7 @@ function frame(){
   if (cutNow) { lastCut = performance.now(); if (!gameT0) gameT0 = lastCut; }
   if (changed) {
     hairDirty();
+    mowedCount = countCut();
     for (let k = 0; k < Math.min(cutNow, 14); k++) spawnClip();
     updateMeter();
     if (!won) react(mowedCount / HN);
@@ -1654,8 +1726,8 @@ function frame(){
       answerEl.textContent = 'In here, yes. In real life, no.';
       for (let k = 0; k < 120; k++) spawnClip();
       const ms = performance.now() - (gameT0 || performance.now());
-      gtimeEl.textContent = fmtShort(ms); gtimeEl.classList.remove('on');
-      setTimeout(() => openWin(ms), 1400);
+      setTimer(ms, 'done');
+      winTimer = setTimeout(() => { winTimer = 0; if (won) openWin(ms); }, 1400);
     }
   }
 
@@ -1743,10 +1815,10 @@ function frame(){
 
   // the factory leans a hair with the mouse, nothing more
   if (bgVid && !reduceMotion) bgVid.style.transform = `scale(1.05) translate(${(-skyLookX * 1.2).toFixed(3)}%, ${(-skyLookY * 0.8).toFixed(3)}%)`;
-  if (gameT0 && !won) { gtimeEl.textContent = fmtShort(performance.now() - gameT0); gtimeEl.classList.add('on'); }
+  if (gameT0 && !won) setTimer(performance.now() - gameT0, 'on');
   // buzz only while a drive control is held and hair is actually coming off
   const cutting = keys.size > 0 && !dragged && performance.now() - lastCut < 120;
-  buzzSet(winDlg.open || storyOn || won || !cutting ? 0 : 0.42 + 0.18 * Math.min(1, speed));
+  buzzSet(winDlg.open || storyOn || won || regrow || !cutting ? 0 : 0.29 + 0.13 * Math.min(1, speed));
   renderer.render(scene, camera);
 }
 
@@ -1758,7 +1830,7 @@ new IntersectionObserver(([e]) => { visible = e.isIntersecting; }).observe(hero)
 renderer.setAnimationLoop(() => { if (visible) frame(); else { clock.getDelta(); buzzSleep(); } });
 
 // test hook
-window.__mower = { get pct(){ return mowedCount / HN; }, HN };
+window.__mower = { get pct(){ return mowedCount / HN; }, get actual(){ return countCut() / HN; }, get regrowing(){ return !!regrow; }, get won(){ return won; }, HN, cutAll(){ for (let i = 0; i < NV; i++) if (hairT[i] > 0) { hairState[i] = 0.3; writeHair(i); } hairDirty(); } };
 window.__jaw = (v) => { talkEnd = 0; jawNow = v; setJaw(v); window.__jawHold = v; };
 </script>
 </body>
