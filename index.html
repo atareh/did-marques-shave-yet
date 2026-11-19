@@ -1388,7 +1388,7 @@ const winName = document.getElementById('winName'), winMsg = document.getElement
 const store = { get(k){ try { return localStorage.getItem(k); } catch (e) { return null; } }, set(k, v){ try { localStorage.setItem(k, v); } catch (e) {} } };
 let run = null;
 function cardBlob(){ return new Promise(res => shareCv.toBlob(res, 'image/png')); }
-function tweetText(){ return `I shaved @MKBHD\u2019s head in ${fmtWords(run.ms)} \uD83D\uDC88\n\nHe only has ${run.days} days left with his hair, if @Tesla delivers.\n\nBeat my time:`; }
+function tweetText(){ return `I shaved @MKBHD\u2019s head in ${fmtWords(run.ms)} \uD83D\uDC88\n\nHe only has ${run.days} days left with his hair, if @Tesla delivers.\n\nBeat my time: ${SITE}`; }
 function redraw(){ if (run) drawCard(shareCv, { ...run, name: winName.value.trim() }); }
 const step1 = document.getElementById('step1'), step2 = document.getElementById('step2'), nameMsg = document.getElementById('nameMsg');
 // this device's own top five
@@ -1465,7 +1465,7 @@ document.getElementById('winCopy').addEventListener('click', async () => {
   } catch (e) { winMsg.textContent = 'Your browser won’t copy images. Use Download, then attach it to your post.'; }
 });
 document.getElementById('winPost').addEventListener('click', () => {
-  const u = 'https://x.com/intent/post?text=' + encodeURIComponent(tweetText()) + '&url=' + encodeURIComponent(SITE);
+  const u = 'https://x.com/intent/post?text=' + encodeURIComponent(tweetText());
   window.open(u, '_blank', 'noopener');
 });
 document.getElementById('winSave').addEventListener('click', async () => {
