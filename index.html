@@ -418,7 +418,7 @@ footer strong{color:var(--ink)}
     </div>
   </div>
   <div class="bigtime" id="bigtime" aria-label="Shave timer"><span class="lab"><span class="mono">Shave timer</span><span class="hint2" id="gtimeHint">Starts on your<br>first cut</span></span><b id="gtime">0.0s</b></div>
-  <aside class="tops" id="tops" aria-label="Top times on this device"><span class="mono">Top times · this device</span><ol id="topsList"></ol></aside>
+  <aside class="tops" id="tops" aria-label="Top times"><span class="mono" id="topsLbl">Top times · this device</span><ol id="topsList"></ol></aside>
   <div class="bubble" id="bubble" role="status" aria-live="polite"></div>
   <div class="ytpip" id="ytpip" aria-label="Source video"><div id="ytplayer"></div></div>
   <div class="story-cap" id="storyCap" aria-live="polite">
@@ -637,6 +637,7 @@ footer strong{color:var(--ink)}
   <div class="in step" id="step2" hidden>
     <span class="mono">Step 2 of 2 · Share it</span>
     <h2 id="winTitle2">Nice cut, <em id="winWho">barber</em>.</h2>
+    <p class="left" id="winRank"></p>
     <canvas id="shareCv" width="1200" height="675" aria-label="Your share card"></canvas>
     <div class="acts">
       <button class="btn hot" type="button" id="winCopy">1. Copy card</button>
@@ -1230,7 +1231,7 @@ function regrowAll(instant){
   }
   lastSaid = -1;
   mowedCount = 0; won = false; clearTimeout(winTimer); winTimer = 0;
-  gameT0 = 0; lastCut = 0; setTimer(0, 'idle');
+  gameT0 = 0; lastCut = 0; setTimer(0, 'idle'); runTok = null;
   answerEl.classList.remove('won'); answerEl.textContent = 'No.';
   updateMeter();
 }
@@ -1383,13 +1384,34 @@ function saveTop(name, ms, id){
   tops.sort((a, b) => a.ms - b.ms);
   try { localStorage.setItem('dmsy-tops', JSON.stringify(tops.slice(0, 5))); } catch (e) {}
 }
+// the table shows the shared leaderboard when it's reachable, and this device's own top five when it isn't
+let runTok = null, globalTop = null;
+function lbStart(){
+  runTok = fetch('/api/start', { method: 'POST' }).then(r => r.ok ? r.json() : null).then(j => j && j.token).catch(() => null);
+}
 function renderTops(meId){
-  const tops = loadTops(), ol = document.getElementById('topsList');
-  ol.replaceChildren(...tops.map(t => { const li = document.createElement('li'); if (t.id === meId) li.className = 'me';
+  const global = Array.isArray(globalTop), tops = global ? globalTop : loadTops(), ol = document.getElementById('topsList');
+  document.getElementById('topsLbl').textContent = global ? 'Top barbers' : 'Top times · this device';
+  ol.replaceChildren(...tops.map(t => { const li = document.createElement('li'); if (meId && t.id === meId) li.className = 'me';
     const n = document.createElement('span'); n.textContent = t.name; const b = document.createElement('b'); b.textContent = fmtShort(t.ms); li.append(n, b); return li; }));
   if (!tops.length) { const e = document.createElement('span'); e.className = 'empty'; e.textContent = 'No times yet. Set the first one.'; ol.append(e); }
 }
 renderTops();
+fetch('/api/scores').then(r => r.ok ? r.json() : null).then(j => { if (j && Array.isArray(j.top)) { globalTop = j.top; renderTops(); } }).catch(() => {});
+async function submitScore(name, ms){
+  const rankEl = document.getElementById('winRank'); rankEl.textContent = '';
+  try {
+    const token = await Promise.race([runTok, new Promise(r => setTimeout(() => r(null), 4000))]);
+    if (!token) return;
+    const r = await fetch('/api/score', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ token, name, ms: Math.round(ms) }) });
+    const j = await r.json().catch(() => null);
+    if (!r.ok || !j) return;
+    runTok = null;
+    if (Array.isArray(j.top)) globalTop = j.top;
+    renderTops(j.id);
+    if (j.rank) rankEl.textContent = j.rank <= 10 ? `You’re #${j.rank} on the leaderboard.` : `You’re #${j.rank} on the leaderboard. Top 10 is ${fmtWords(globalTop[globalTop.length - 1].ms)}.`;
+  } catch (e) {}
+}
 function showStep(n){ step1.hidden = n !== 1; step2.hidden = n !== 2; (n === 1 ? winName : document.getElementById('winCopy')).focus({ preventScroll: true }); }
 async function openWin(ms){
   const best = Number(store.get('dmsy-best')) || 0, isBest = !best || ms < best;
@@ -1411,7 +1433,8 @@ step1.addEventListener('submit', async e => {
   if (!name) { nameMsg.textContent = 'Add your name to save your time.'; winName.focus(); return; }
   nameMsg.textContent = '';
   store.set('dmsy-name', name);
-  saveTop(name, run.ms, run.id); renderTops(run.id);
+  saveTop(name, run.ms, run.id); if (!Array.isArray(globalTop)) renderTops(run.id);
+  if (!run.sent) { run.sent = true; submitScore(name, run.ms); }
   document.getElementById('winWho').textContent = name;
   await fontsReady();
   drawCard(shareCv, { ...run, name });
@@ -1712,7 +1735,7 @@ function frame(){
       }
     }
   }
-  if (cutNow) { lastCut = performance.now(); if (!gameT0) gameT0 = lastCut; }
+  if (cutNow) { lastCut = performance.now(); if (!gameT0) { gameT0 = lastCut; lbStart(); } }
   if (changed) {
     hairDirty();
     mowedCount = countCut();
