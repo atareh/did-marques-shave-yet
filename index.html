@@ -75,6 +75,8 @@ p{margin:0}
 .hud{position:absolute;left:0;right:0;top:0;padding:26px 28px 0;pointer-events:none}
 .title{text-align:center}
 .title h1{font-size:min(4.4vw,64px);line-height:.95;letter-spacing:-.045em;white-space:nowrap}
+.title .headrow{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:6px 16px}
+.title .headrow .answer{font-size:min(3vw,40px);padding:2px 14px 6px;flex:none}
 .title .sub{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:8px 12px;margin-top:10px}
 .title p{font-size:clamp(14px,1.3vw,17px);color:var(--ink);font-weight:600;max-width:52ch;line-height:1.35;text-shadow:0 0 12px var(--fade),0 0 4px var(--fade)}
 .title h1{text-shadow:0 0 24px color-mix(in srgb,var(--fade) 70%,transparent)}
@@ -365,7 +367,10 @@ footer strong{color:var(--ink)}
   body{font-size:16px}
   .wrap{padding:0 16px}
   .hud{padding:18px 16px 0}
-  .title h1{font-size:7.6vw}
+  .title h1{font-size:6.9vw}
+  .title .headrow{gap:6px 8px;flex-wrap:nowrap}
+  .title .headrow:has(.won){flex-wrap:wrap}
+  .title .headrow .answer{font-size:5vw;padding:2px 9px 4px}
   .title .sub{gap:8px 12px;margin-top:10px}
   .title p{font-size:14px}
   .meter{left:16px;bottom:16px;width:calc(100% - 210px);min-width:140px;padding:9px 11px 10px;box-shadow:3px 3px 0 var(--ink)}
@@ -406,9 +411,11 @@ footer strong{color:var(--ink)}
   <div class="veil" aria-hidden="true"></div>
   <div class="hud">
     <div class="title">
-      <h1>Did Marques Shave Yet?</h1>
-      <div class="sub">
+      <div class="headrow">
+        <h1>Did Marques Shave Yet?</h1>
         <div class="answer" id="answer">No.</div>
+      </div>
+      <div class="sub">
         <p>Marques only needs to shave his head if Tesla delivers a Cybercab to a customer before December 31, 2026.</p>
       </div>
       <div class="timeleft" aria-label="Time left on the bet">
