@@ -74,6 +74,7 @@ p{margin:0}
 #scene.dragging{cursor:grabbing}
 .hud{position:absolute;left:0;right:0;top:0;padding:26px 28px 0;pointer-events:none}
 .title{text-align:left;max-width:min(54vw,760px)}
+.mobbet{display:none}
 .title h1{font-size:min(3.9vw,58px);line-height:.95;letter-spacing:-.045em;white-space:nowrap}
 .title .headrow{display:flex;align-items:center;justify-content:flex-start;flex-wrap:wrap;gap:6px 16px}
 .title .headrow .answer{font-size:min(3vw,40px);padding:2px 14px 6px;flex:none}
@@ -185,6 +186,16 @@ kbd{display:inline-grid;place-items:center;min-width:22px;height:22px;padding:0 
 .win input{font:600 17px/1.2 var(--body);padding:10px 12px;border:1.5px solid var(--ink);border-radius:12px;background:var(--bg);color:var(--ink)}
 .win input:focus-visible{outline:3px solid var(--accent);outline-offset:1px}
 .win .acts{display:flex;flex-wrap:wrap;gap:8px}
+.win .wlb{border-top:1.5px dashed color-mix(in srgb,var(--ink) 25%,transparent);padding-top:12px;display:grid;gap:6px}
+.win .wlb .mono{color:var(--muted);font-size:11px}
+.win .wtops{font-size:15px;gap:2px}
+.win .wtops li{padding:3px 8px;border-radius:9px}
+.win .wtops li::before{color:var(--muted)}
+.win .wtops li.me{background:var(--accent);color:#fff;font-size:16.5px;font-weight:700;padding:6px 10px;transform:scale(1.02);box-shadow:3px 3px 0 var(--ink)}
+.win .wtops li.me::before,.win .wtops li.me b{color:#fff}
+.win .wtops.out{margin-top:2px}
+.win .wtops.out li::before{content:attr(data-r)}
+.win .wtops li b{font-size:13.5px}
 .win .acts .btn{font-size:15px;padding:9px 16px}
 .win .btn.hot{background:var(--ink);color:var(--bg)}
 .win .btn.hot:hover{background:var(--accent);border-color:var(--accent)}
@@ -369,6 +380,11 @@ footer strong{color:var(--ink)}
   .wrap{padding:0 16px}
   .hud{padding:18px 16px 0}
   .title{max-width:none}
+  .title .sub,.timeleft .hear,.hint{display:none}
+  .timeleft{margin-top:10px;gap:8px;flex-wrap:nowrap}
+  .timeleft .mono{font-size:10px;padding:4px 7px}
+  .mobbet{display:grid;gap:12px;justify-items:start;padding-top:22px;padding-bottom:8px}
+  .mobbet p{font-size:16px;font-weight:600;line-height:1.4;max-width:40ch;margin:0}
   .title h1{font-size:6.9vw}
   .title .headrow{gap:6px 8px;flex-wrap:nowrap}
   .title .headrow:has(.won){flex-wrap:wrap}
@@ -409,10 +425,33 @@ footer strong{color:var(--ink)}
 !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture register register_once register_for_session unregister unregister_for_session getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSessionId getSurveys getActiveMatchingSurveys renderSurvey canRenderSurvey getNextSurveyStep identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException loadToolbar get_property getSessionProperty createPersonProfile opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing clear_opt_in_out_capturing debug".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
 posthog.init('phc_rEbrL7KLtw4K8UUr3yi8Jq3nAMLCp9TbGf8dLdYTjQJA', { api_host: 'https://us.i.posthog.com', person_profiles: 'identified_only', autocapture: true, capture_pageview: true });
 </script>
+<link rel="preload" href="assets/head.glb" as="fetch" type="model/gltf-binary" crossorigin>
+<link rel="preload" href="assets/mower.glb" as="fetch" type="model/gltf-binary" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<style id="loader-css">
+.loader{position:fixed;inset:0;z-index:1000;display:grid;place-items:center;background:radial-gradient(120% 90% at 50% 40%,#f6dc8c 0%,#e0b54f 45%,#b98a2a 100%);color:#3b2706;transition:opacity .5s ease,visibility .5s;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+.loader.done{opacity:0;visibility:hidden}
+.loader .box{width:min(520px,82vw);text-align:center}
+.loader .word{font-weight:800;font-size:clamp(28px,5vw,44px);letter-spacing:-.03em;margin:0 0 26px;text-shadow:0 1px 0 #fff6}
+.loader .track{position:relative;height:12px;border-radius:99px;background:#3b270622;box-shadow:inset 0 1px 2px #3b270633}
+.loader .fill{position:absolute;inset:0 auto 0 0;width:0;border-radius:99px;background:linear-gradient(90deg,#7a5410,#3b2706);transition:width .25s ease-out}
+.loader .car{position:absolute;bottom:10px;left:0;width:74px;transform:translateX(-50%);transition:left .25s ease-out;animation:bump .32s ease-in-out infinite alternate}
+.loader .pct{margin-top:14px;font:600 13px/1 ui-monospace,Menlo,monospace;letter-spacing:.12em;opacity:.7}
+@keyframes bump{to{transform:translateX(-50%) translateY(-2px) rotate(-1deg)}}
+@media (prefers-reduced-motion:reduce){.loader .car{animation:none}}
+</style>
 </head>
 <body>
+<div class="loader" id="loader" role="status" aria-live="polite"><div class="box">
+  <p class="word">Loading</p>
+  <div class="track"><div class="fill" id="ldFill"></div>
+    <svg class="car" id="ldCar" viewBox="0 0 74 40" aria-hidden="true"><path d="M44 9 L58 1" stroke="#3b2706" stroke-width="3" stroke-linecap="round"/><path d="M6 27 C8 17 16 11 30 10 C44 9 56 13 66 22 C69 25 69 29 66 30 L8 30 C5 30 5 29 6 27Z" fill="#3b2706"/><path d="M22 14 C28 11 40 11 48 15 L44 20 L20 20Z" fill="#f3d27a" opacity=".85"/><circle cx="19" cy="31" r="6" fill="#2a1b03"/><circle cx="19" cy="31" r="2.4" fill="#e0b54f"/><circle cx="55" cy="31" r="6" fill="#2a1b03"/><circle cx="55" cy="31" r="2.4" fill="#e0b54f"/></svg>
+  </div>
+  <div class="pct" id="ldPct">0%</div>
+</div></div>
+<script>setTimeout(function(){var l=document.getElementById('loader');if(l)l.classList.add('done')},25000)</script>
 <header class="hero" id="hero">
-  <video id="bgvid" class="bgvid" autoplay muted loop playsinline preload="auto" poster="assets/factory-still.jpg" aria-hidden="true" tabindex="-1"><source src="assets/factory-loop.mp4" type="video/mp4"></video>
+  <video id="bgvid" class="bgvid" muted loop playsinline preload="none" poster="assets/factory-still.jpg" aria-hidden="true" tabindex="-1"><source src="assets/factory-loop.mp4" type="video/mp4"></video>
   <canvas id="scene" aria-label="Interactive toy scene: drive a robotaxi lawnmower over a cartoon head to mow its hair"></canvas>
   <div class="veil" aria-hidden="true"></div>
   <div class="hud">
@@ -458,7 +497,10 @@ posthog.init('phc_rEbrL7KLtw4K8UUr3yi8Jq3nAMLCp9TbGf8dLdYTjQJA', { api_host: 'ht
   </div>
   <div class="nogl" id="nogl">Your browser couldn't start the 3D mower. The rest of the page still works below.</div>
 </header>
-
+<div class="mobbet wrap" aria-label="The bet">
+  <p>Marques only needs to shave his head if Tesla delivers a Cybercab to a customer before December 31, 2026.</p>
+  <button class="hear" type="button" onclick="window.scrollTo({top:0,behavior:'smooth'});document.getElementById('hearBtn').click()"><span aria-hidden="true">&#9654;</span> What's the bet?</button>
+</div>
 
 <main class="wrap">
   <section>
@@ -641,6 +683,7 @@ posthog.init('phc_rEbrL7KLtw4K8UUr3yi8Jq3nAMLCp9TbGf8dLdYTjQJA', { api_host: 'ht
     <span class="mono">Step 1 of 2 · Shaved.</span>
     <h2 id="winTitle">It took you <em id="winTime">0 seconds</em> to shave Marques' hair.</h2>
     <p class="left" id="winLeft">He only has -- days left with his hair, if Tesla delivers.</p>
+    <canvas id="prevCv" width="1200" height="675" aria-label="Preview of your share card"></canvas>
     <label>Put your name on your time
       <input id="winName" class="ph-no-capture" type="text" maxlength="24" autocomplete="nickname" placeholder="Your name" required>
     </label>
@@ -654,11 +697,11 @@ posthog.init('phc_rEbrL7KLtw4K8UUr3yi8Jq3nAMLCp9TbGf8dLdYTjQJA', { api_host: 'ht
     <p class="left" id="winRank"></p>
     <canvas id="shareCv" width="1200" height="675" aria-label="Your share card"></canvas>
     <div class="acts">
-      <button class="btn hot" type="button" id="winCopy">1. Copy card</button>
-      <button class="btn hot" type="button" id="winPost">2. Post on X</button>
-      <button class="btn" type="button" id="winSave">Download</button>
+      <button class="btn hot" type="button" id="winCopy">Copy image</button>
+      <button class="btn hot" type="button" id="winPost">Post on X</button>
     </div>
     <p class="msg" id="winMsg" role="status"></p>
+    <div class="wlb" id="winLb"><span class="mono" id="winLbLbl">Top barbers</span><ol class="wtops" id="winTops"></ol><ol class="wtops out" id="winMe" hidden></ol></div>
     <div class="foot"><button type="button" id="winBack">Change name</button><button type="button" class="again">Restart and go again</button></div>
   </div>
 </dialog>
@@ -718,7 +761,8 @@ for (const f of document.querySelectorAll('.clip iframe[data-src]')) {
 import * as THREE from 'three';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { mergeVertices } from 'three/addons/utils/BufferGeometryUtils.js';
+import { mergeVertices } from 'three/addons/utils/BufferGeometryUtils.js'
+import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 
 const canvas = document.getElementById('scene');
 const hero = document.getElementById('hero');
@@ -727,6 +771,7 @@ try {
   renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
 } catch (e) {
   document.getElementById('nogl').style.display = 'grid';
+  document.getElementById('loader')?.classList.add('done');
   throw e;
 }
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -754,8 +799,9 @@ new THREE.TextureLoader().load('assets/factory360.jpg', tex => {
 if (bgVid) {
   hero.classList.add('env3d');
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { bgVid.removeAttribute('autoplay'); bgVid.pause(); }
-  else bgVid.play?.().catch(() => {});
 }
+// the looping factory video waits until his head is on screen, so it doesn't compete with the models
+function startBackground(){ if (bgVid && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) { bgVid.preload = 'auto'; bgVid.play?.().catch(() => {}); } }
 addEventListener('pointermove', e => { skyLookX = e.clientX / innerWidth - 0.5; skyLookY = e.clientY / innerHeight - 0.5; }, { passive: true });
 
 // ---------- lights (soft toy-box lighting) ----------
@@ -795,23 +841,59 @@ function placeOut(obj, dir, r){
 
 // The head is a generated 3D caricature: bald, so the mowable hair below can sit on it.
 // Its file is already sized so the cranium is centred on the origin with a radius of about 1, and the neck is cut off.
-// (shipped as head.json = glTF description + base64 geometry, with the texture as a plain image file)
-async function loadPacked(name){
-  const pack = await (await fetch('assets/' + name + '.json')).json();
-  const enc = new TextEncoder();
-  let jsonBytes = enc.encode(JSON.stringify(pack.gltf));
-  const pad = (4 - jsonBytes.length % 4) % 4;
-  if (pad) { const t = new Uint8Array(jsonBytes.length + pad).fill(0x20); t.set(jsonBytes); jsonBytes = t; }
-  const raw = atob(pack.bin), binLen = Math.ceil(raw.length / 4) * 4;
-  const glb = new Uint8Array(12 + 8 + jsonBytes.length + 8 + binLen), dv = new DataView(glb.buffer);
-  dv.setUint32(0, 0x46546C67, true); dv.setUint32(4, 2, true); dv.setUint32(8, glb.length, true);
-  dv.setUint32(12, jsonBytes.length, true); dv.setUint32(16, 0x4E4F534A, true); glb.set(jsonBytes, 20);
-  const bo = 20 + jsonBytes.length;
-  dv.setUint32(bo, binLen, true); dv.setUint32(bo + 4, 0x004E4942, true);
-  for (let i = 0; i < raw.length; i++) glb[bo + 8 + i] = raw.charCodeAt(i);
-  return (await new GLTFLoader().parseAsync(glb.buffer, 'assets/')).scene;
+// (shipped as head.glb: meshopt-compressed geometry with an embedded webp texture)
+// compact binary models: meshopt-compressed geometry with an embedded webp texture
+const gltfLoader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder);
+// geometry code below edits vertex positions directly, so unpack quantized attributes to plain floats
+// and fold any node transform the compressor added back into the vertices
+function unpackModel(scene){
+  scene.updateMatrixWorld(true);
+  scene.traverse(o => {
+    if (!o.isMesh) return;
+    const g = o.geometry;
+    for (const k of Object.keys(g.attributes)) {
+      const at = g.attributes[k];
+      if (at.isInterleavedBufferAttribute || !(at.array instanceof Float32Array) || at.normalized) {
+        const n = at.count, sz = at.itemSize, out = new Float32Array(n * sz);
+        for (let i = 0; i < n; i++) for (let c = 0; c < sz; c++) out[i * sz + c] = at.getComponent ? at.getComponent(i, c) : [at.getX(i), at.getY(i), at.getZ(i), at.getW(i)][c];
+        g.setAttribute(k, new THREE.BufferAttribute(out, sz));
+      }
+    }
+    if (!o.matrixWorld.equals(new THREE.Matrix4())) {
+      g.applyMatrix4(o.matrixWorld);
+      let p = o; while (p) { p.position.set(0, 0, 0); p.quaternion.identity(); p.scale.set(1, 1, 1); p = p.parent === scene ? null : p.parent; }
+      o.position.set(0, 0, 0); o.quaternion.identity(); o.scale.set(1, 1, 1);
+    }
+  });
+  scene.updateMatrixWorld(true);
+  return scene;
 }
-const [headModel, mowerModel] = await Promise.all([loadPacked('head'), loadPacked('mower')]);
+// fetch with progress so the loading screen can show real numbers
+const KNOWN = { head: 1042884, mower: 798236 };
+const loadBytes = { head: [0, KNOWN.head], mower: [0, KNOWN.mower] };
+const ldFill = document.getElementById('ldFill'), ldCar = document.getElementById('ldCar'), ldPct = document.getElementById('ldPct');
+let ldShown = 0;
+function loaderTick(){
+  // the head counts for most of the bar, since that's what you're waiting to see
+  const f = n => Math.min(1, loadBytes[n][0] / loadBytes[n][1]);
+  const p = Math.max(ldShown, Math.min(0.97, f('head') * 0.62 + f('mower') * 0.35));
+  ldShown = p; const w = (p * 100).toFixed(1) + '%';
+  if (ldFill) ldFill.style.width = w; if (ldCar) ldCar.style.left = w; if (ldPct) ldPct.textContent = Math.round(p * 100) + '%';
+}
+function hideLoader(){ startBackground(); ldShown = 1; if (ldFill) { ldFill.style.width = '100%'; ldCar.style.left = '100%'; ldPct.textContent = '100%'; } setTimeout(() => document.getElementById('loader')?.classList.add('done'), 250); }
+async function fetchProgress(name){
+  const r = await fetch('assets/' + name + '.glb');
+  const total = +r.headers.get('content-length') || 0;
+  loadBytes[name][1] = KNOWN[name];
+  if (!r.body) { const buf = await r.arrayBuffer(); loadBytes[name] = [1, 1]; loaderTick(); return buf; }
+  const reader = r.body.getReader(), parts = []; let got = 0;
+  for (;;) { const { done, value } = await reader.read(); if (done) break; parts.push(value); got += value.length; loadBytes[name][0] = got; loaderTick(); }
+  const out = new Uint8Array(got); let o = 0; for (const p of parts) { out.set(p, o); o += p.length; }
+  return out.buffer;
+}
+async function loadModel(name){ return unpackModel((await gltfLoader.parseAsync(await fetchProgress(name), 'assets/')).scene); }
+const mowerPromise = loadModel('mower');
+const [headModel, mowerModel] = await Promise.all([loadModel('head'), mowerPromise]);
 {
   headModel.traverse(o => {
     if (!o.isMesh) return;
@@ -1302,7 +1384,7 @@ function fmtWords(ms){
   const m = Math.floor(s / 60), r = Math.floor(s % 60);
   return m + (m === 1 ? ' minute' : ' minutes') + (r ? ' ' + r + (r === 1 ? ' second' : ' seconds') : '');
 }
-// clippers: a low recorded hum (assets/clipper-low.mp3, a seamless 2.0 s loop) played from memory so the loop never gaps
+// clippers: an electric razor buzz (assets/clipper-razor.mp3, a seamless 2.0 s loop) played from memory so the loop never gaps
 let buzz = null;
 let muted = (() => { try { return localStorage.getItem('dmsy-mute') === '1'; } catch (e) { return false; } })();
 function buzzInit(e){
@@ -1312,7 +1394,7 @@ function buzzInit(e){
   const ctx = voiceCtx();
   const out = ctx.createGain(); out.gain.value = 0; out.connect(ctx.destination);
   buzz = { ctx, out, src: null, level: 0, wob: 0 };
-  fetch('assets/clipper-low.mp3').then(r => r.arrayBuffer()).then(ab => new Promise((res, rej) => ctx.decodeAudioData(ab, res, rej))).then(buf => {
+  fetch('assets/clipper-razor.mp3').then(r => r.arrayBuffer()).then(ab => new Promise((res, rej) => ctx.decodeAudioData(ab, res, rej))).then(buf => {
     // skip any encoder delay at the front so the loop points land on real audio
     const d = buf.getChannelData(0), lim = Math.min(d.length, Math.round(buf.sampleRate * 0.06));
     let i0 = 0; while (i0 < lim && Math.abs(d[i0]) < 0.01) i0++;
@@ -1424,6 +1506,17 @@ function lbStart(){
   track('shave_started');
   runTok = fetch('/api/start', { method: 'POST' }).then(r => r.ok ? r.json() : null).then(j => j && j.token).catch(() => null);
 }
+// leaderboard inside the finish popup: top 10 with your row popped out, or your row underneath with its rank
+function renderWinTops(meId, myRank, me){
+  const global = Array.isArray(globalTop), tops = (global ? globalTop : loadTops()).slice(0, 10);
+  document.getElementById('winLbLbl').textContent = global ? 'Top barbers' : 'Top times · this device';
+  const row = t => { const li = document.createElement('li'); if (meId && t.id === meId) li.className = 'me';
+    const n = document.createElement('span'); n.textContent = t.name; const b = document.createElement('b'); b.textContent = fmtShort(t.ms); li.append(n, b); return li; };
+  document.getElementById('winTops').replaceChildren(...tops.map(row));
+  const out = document.getElementById('winMe'), inTop = tops.some(t => t.id === meId);
+  out.hidden = inTop || !me || !myRank;
+  if (!out.hidden) { const li = row({ ...me, id: meId }); li.dataset.r = myRank; out.replaceChildren(li); }
+}
 function renderTops(meId){
   const global = Array.isArray(globalTop), tops = global ? globalTop : loadTops(), ol = document.getElementById('topsList');
   document.getElementById('topsLbl').textContent = global ? 'Top barbers' : 'Top times · this device';
@@ -1444,8 +1537,9 @@ async function submitScore(name, ms){
     runTok = null;
     if (Array.isArray(j.top)) globalTop = j.top;
     renderTops(j.id);
+    renderWinTops(j.id, j.rank, { name: j.name, ms: j.ms });
     if (j.rank) track('leaderboard_rank', { rank: j.rank });
-    if (j.rank) rankEl.textContent = j.rank <= 10 ? `You’re #${j.rank} on the leaderboard.` : `You’re #${j.rank} on the leaderboard. Top 10 is ${fmtWords(globalTop[globalTop.length - 1].ms)}.`;
+    if (j.rank) rankEl.textContent = j.rank <= 10 ? `You’re #${j.rank} on the leaderboard.` : `You’re #${j.rank}. Beat ${fmtWords(globalTop[globalTop.length - 1].ms)} to make the top 10.`;
   } catch (e) {}
 }
 function showStep(n){ step1.hidden = n !== 1; step2.hidden = n !== 2; (n === 1 ? winName : document.getElementById('winCopy')).focus({ preventScroll: true }); }
@@ -1462,8 +1556,12 @@ async function openWin(ms){
   keys.clear(); buzzSet(0);
   if (!winDlg.open) winDlg.showModal();
   showStep(1);
-  fontsReady();
+  fontsReady().then(drawPreview);
+  drawPreview();
 }
+const prevCv = document.getElementById('prevCv');
+let prevRaf = 0;
+function drawPreview(){ cancelAnimationFrame(prevRaf); prevRaf = requestAnimationFrame(() => { if (run) drawCard(prevCv, { ...run, name: winName.value.trim().replace(/\s+/g, ' ') || 'Your name' }); }); }
 step1.addEventListener('submit', async e => {
   e.preventDefault();
   const name = winName.value.trim().replace(/\s+/g, ' ');
@@ -1472,6 +1570,7 @@ step1.addEventListener('submit', async e => {
   store.set('dmsy-name', name);
   track('name_submitted');
   saveTop(name, run.ms, run.id); if (!Array.isArray(globalTop)) renderTops(run.id);
+  renderWinTops(Array.isArray(globalTop) ? null : run.id);
   if (!run.sent) { run.sent = true; submitScore(name, run.ms); }
   document.getElementById('winWho').textContent = name;
   await fontsReady();
@@ -1480,23 +1579,30 @@ step1.addEventListener('submit', async e => {
   track('share_card_shown');
 });
 document.getElementById('winBack').addEventListener('click', () => showStep(1));
-winName.addEventListener('input', () => { if (winName.value.trim()) nameMsg.textContent = ''; });
+winName.addEventListener('input', () => { if (winName.value.trim()) nameMsg.textContent = ''; drawPreview(); });
 document.getElementById('winClose').addEventListener('click', () => winDlg.close());
 for (const b of document.querySelectorAll('#winDlg .again')) b.addEventListener('click', () => { winDlg.close(); regrowAll(); });
-document.getElementById('winCopy').addEventListener('click', async () => {
+async function downloadCard(){
+  const a = document.createElement('a'); a.href = URL.createObjectURL(await cardBlob()); a.download = 'i-shaved-marques.png'; a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+}
+const copyBtn = document.getElementById('winCopy');
+copyBtn.addEventListener('click', async () => {
+  track('copy_image_clicked');
   try {
+    if (!navigator.clipboard?.write || typeof ClipboardItem === 'undefined') throw new Error('no image clipboard');
     await navigator.clipboard.write([new ClipboardItem({ 'image/png': cardBlob() })]);
-    winMsg.textContent = 'Card copied. Now hit Post on X and paste it into your post.';
-  } catch (e) { winMsg.textContent = 'Your browser won’t copy images. Use Download, then attach it to your post.'; }
+    copyBtn.textContent = 'Copied!'; setTimeout(() => { copyBtn.textContent = 'Copy image'; }, 1800);
+    winMsg.textContent = 'Now hit Post on X and paste it into your post.';
+  } catch (e) {
+    await downloadCard();
+    winMsg.textContent = 'Your browser can’t copy images, so we saved it instead. Attach it to your post.';
+  }
 });
 document.getElementById('winPost').addEventListener('click', () => {
   track('post_to_x_clicked');
   const u = 'https://x.com/intent/post?text=' + encodeURIComponent(tweetText());
   window.open(u, '_blank', 'noopener');
-});
-document.getElementById('winSave').addEventListener('click', async () => {
-  const a = document.createElement('a'); a.href = URL.createObjectURL(await cardBlob()); a.download = 'i-shaved-marques.png'; a.click();
-  setTimeout(() => URL.revokeObjectURL(a.href), 4000);
 });
 window.__win = openWin;
 
@@ -1551,7 +1657,7 @@ function resize(){
   renderer.setSize(w, h, false);
   camera.aspect = w / h;
   // keep the whole head width in view on narrow screens
-  const fitW = camera.aspect < 0.8 ? 2.55 : 3.4, fitH = camera.aspect > 1.3 ? 3.55 : camera.aspect < 0.8 ? 3.3 : 3.8;
+  const fitW = camera.aspect < 0.8 ? 2.3 : 3.4, fitH = camera.aspect > 1.3 ? 3.55 : camera.aspect < 0.8 ? 3.3 : 3.8;
   const vfov = THREE.MathUtils.degToRad(camera.fov);
   const distH = (fitH/2) / Math.tan(vfov/2);
   const distW = (fitW/2) / (Math.tan(vfov/2) * camera.aspect);
@@ -1562,7 +1668,7 @@ function resize(){
   camera.position.copy(target).addScaledVector(dir, dist);
   camera.lookAt(target);
   // the title runs across the top, so the head sits centred and a little low
-  camera.setViewOffset(w, h, 0, camera.aspect > 1.3 ? -h*0.07 : camera.aspect < 0.8 ? -h*0.075 : -h*0.08, w, h);
+  camera.setViewOffset(w, h, 0, camera.aspect > 1.3 ? -h*0.07 : camera.aspect < 0.8 ? -h*0.035 : -h*0.08, w, h);
   placeHud();
   camera.updateProjectionMatrix();
 }
@@ -1799,7 +1905,7 @@ function frame(){
       for (let k = 0; k < 120; k++) spawnClip();
       const ms = performance.now() - (gameT0 || performance.now());
       setTimer(ms, 'done');
-      winTimer = setTimeout(() => { winTimer = 0; if (won) openWin(ms); }, 1400);
+      winTimer = setTimeout(() => { winTimer = 0; if (won) openWin(ms); }, 1000);
     }
   }
 
@@ -1901,6 +2007,7 @@ regrowAll(true);
 let visible = true;
 new IntersectionObserver(([e]) => { visible = e.isIntersecting; }).observe(hero);
 renderer.setAnimationLoop(() => { if (visible) frame(); else { clock.getDelta(); buzzSleep(); } });
+requestAnimationFrame(() => requestAnimationFrame(hideLoader));
 
 // test hook
 window.__mower = { get pct(){ return mowedCount / HN; }, get actual(){ return countCut() / HN; }, get regrowing(){ return !!regrow; }, get won(){ return won; }, get faceErr(){ return head.quaternion.angleTo(restQ); }, HN, cutAll(){ for (let i = 0; i < NV; i++) if (hairT[i] > 0) { hairState[i] = 0.3; writeHair(i); } hairDirty(); } };
