@@ -177,6 +177,12 @@ kbd{display:inline-grid;place-items:center;min-width:22px;height:22px;padding:0 
 .btn.mute{padding:3px 9px;font-size:14px;line-height:1.2}
 .win{width:min(640px,calc(100% - 32px));max-height:calc(100dvh - 32px);overflow:auto;padding:0;border:1.5px solid var(--ink);border-radius:22px;background:var(--card);color:var(--ink);box-shadow:6px 6px 0 var(--ink)}
 .win::backdrop{background:#0f0c09cc;backdrop-filter:blur(4px)}
+/* desktop: the finish panel slides in from the right with no backdrop, so his bald head stays in view */
+.win.side{position:fixed;inset:16px 16px 16px auto;margin:0;width:min(440px,calc(100vw - 32px));max-height:none;z-index:50;animation:winSlide .5s cubic-bezier(.2,.9,.25,1)}
+@keyframes winSlide{from{transform:translateX(calc(100% + 40px))}to{transform:none}}
+@media (prefers-reduced-motion:reduce){.win.side{animation:none}}
+.drive{transition:opacity .3s}
+.hero.finished .bigtime,.hero.finished .tops,.hero.finished .drive{opacity:0 !important;pointer-events:none}
 .win .in{padding:22px 22px 20px;display:grid;gap:14px}
 .win .x{position:absolute;top:12px;right:12px;width:36px;height:36px;border-radius:50%;border:1.5px solid var(--ink);background:var(--card);color:var(--ink);font-size:18px;line-height:1;cursor:pointer}
 .win h2{font-size:clamp(26px,4.6vw,38px);line-height:1.02;letter-spacing:-.035em;padding-right:40px}
@@ -1349,6 +1355,7 @@ function regrowAll(instant){
   mowedCount = 0; won = false; clearTimeout(winTimer); winTimer = 0;
   gameT0 = 0; lastCut = 0; setTimer(0, 'idle'); runTok = null;
   answerEl.classList.remove('won'); answerEl.textContent = 'No.';
+  hero.classList.remove('finished');
   updateMeter();
 }
 let mowedCount = 0, won = false, winTimer = 0;
@@ -1571,7 +1578,10 @@ async function openWin(ms){
   winName.value = store.get('dmsy-name') || '';
   winMsg.textContent = ''; nameMsg.textContent = '';
   keys.clear(); buzzSet(0);
-  if (!winDlg.open) winDlg.showModal();
+  const side = matchMedia('(min-width: 761px)').matches;
+  winDlg.classList.toggle('side', side);
+  if (!winDlg.open) { if (side) winDlg.show(); else winDlg.showModal(); }
+  hero.classList.add('finished');
   showStep(1);
   fontsReady().then(drawPreview);
   drawPreview();
@@ -1598,6 +1608,8 @@ step1.addEventListener('submit', async e => {
 document.getElementById('winBack').addEventListener('click', () => showStep(1));
 winName.addEventListener('input', () => { if (winName.value.trim()) nameMsg.textContent = ''; drawPreview(); });
 document.getElementById('winClose').addEventListener('click', () => winDlg.close());
+winDlg.addEventListener('close', () => hero.classList.remove('finished'));
+addEventListener('keydown', e => { if (e.key === 'Escape' && winDlg.open && winDlg.classList.contains('side')) winDlg.close(); });
 for (const b of document.querySelectorAll('#winDlg .again')) b.addEventListener('click', () => { winDlg.close(); regrowAll(); });
 async function downloadCard(){
   const a = document.createElement('a'); a.href = URL.createObjectURL(await cardBlob()); a.download = 'i-shaved-marques.png'; a.click();
