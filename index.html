@@ -1317,7 +1317,7 @@ function drawCard(cv, { ms, name, days, img }){
   fitFont(ctx, who, 700, 36, D, 500); ctx.fillStyle = '#f4ecdc'; ctx.fillText(who, 64, 486);
   ctx.fillStyle = '#c9b9a3'; ctx.font = `500 26px ${B}`;
   ctx.fillText(`He only has ${days} days left with it,`, 64, 552); ctx.fillText('if Tesla delivers.', 64, 586);
-  ctx.fillStyle = '#a8977f'; ctx.font = `500 19px ${M}`; ctx.fillText(SITE.replace(/^https://(www.)?/, ''), 64, H - 34);
+  ctx.fillStyle = '#a8977f'; ctx.font = `500 19px ${M}`; ctx.fillText(SITE.replace('https://www.', ''), 64, H - 34);
   ctx.font = `800 32px ${D}`; const cta = 'Shave his head! →', cw = ctx.measureText(cta).width + 52;
   pill(ctx, W - 56 - cw, H - 106, cw, 66, 33); ctx.fillStyle = '#e2472f'; ctx.fill();
   ctx.fillStyle = '#fff'; ctx.fillText(cta, W - 56 - cw + 26, H - 62);
