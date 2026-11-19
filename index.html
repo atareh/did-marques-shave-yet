@@ -159,6 +159,7 @@ main section{padding:84px 0;border-bottom:1px solid var(--line)}
 .clip{margin:0;background:var(--card);border:1.5px solid var(--ink);border-radius:18px;padding:12px;box-shadow:5px 5px 0 var(--ink);display:flex;flex-direction:column;gap:14px}
 .clip .vid{aspect-ratio:16/9;border-radius:12px;overflow:hidden;background:var(--ink)}
 .clip iframe{width:100%;height:100%;border:0;display:block}
+.clip video{width:100%;height:100%;display:block;object-fit:contain;background:#000}
 .xembed{border-radius:12px;overflow:hidden;min-height:0}
 .xembed .twitter-tweet{display:none}
 .xembed .poster{aspect-ratio:16/9;border-radius:12px}
@@ -403,8 +404,8 @@ footer strong{color:var(--ink)}
         <figcaption><span class="mono">October 2024 · the clip</span><h3>The promise</h3><p>"If they do, I will shave my head on camera, because I'm that confident." <a href="https://x.com/cb_doge/status/2121390944872444379" target="_blank" rel="noopener">Watch on X &nearr;</a></p></figcaption>
       </figure>
       <figure class="clip">
-        <div class="vid"><iframe data-src="https://www.youtube-nocookie.com/embed/fo-uubnajWM?start=77&amp;rel=0" title="Marques Brownlee doubles down (2026)" loading="lazy" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>
-        <figcaption><span class="mono">September 2026 · starts at 1:17</span><h3>He doubles down</h3><p>"Will not ship to regular people like you and me for $30k." <a href="https://youtu.be/fo-uubnajWM?t=77" target="_blank" rel="noopener">Open on YouTube &nearr;</a></p></figcaption>
+        <div class="vid"><video src="assets/doubles-down.mp4" poster="assets/doubles-down.jpg" controls playsinline preload="metadata" title="Marques Brownlee doubles down (2026)"></video></div>
+        <figcaption><span class="mono">September 2026 · his video</span><h3>He doubles down</h3><p>"If I'm wrong, I'll shave my head on camera for a video and donate to cancer research." <a href="https://youtu.be/fo-uubnajWM?t=77" target="_blank" rel="noopener">Full video on YouTube &nearr;</a></p></figcaption>
       </figure>
   </section>
 
