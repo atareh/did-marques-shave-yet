@@ -5,6 +5,20 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Did Marques Shave Yet?</title>
 <meta name="description" content="A fan parody tracking the Cybercab head-shaving bet, with a countdown to the end of 2026. Not affiliated with Marques Brownlee or Tesla.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://did-marques-shave-yet.vercel.app/">
+<meta property="og:site_name" content="Did Marques Shave Yet?">
+<meta property="og:title" content="Shave his head! Did Marques Shave Yet?">
+<meta property="og:description" content="Mow Marques's hair with a robotaxi lawnmower, time your shave, and count down the Cybercab bet. A fan parody.">
+<meta property="og:image" content="https://did-marques-shave-yet.vercel.app/assets/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="A cartoon Marques head with a lawnmower on top and the words Shave his head!">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Shave his head! Did Marques Shave Yet?">
+<meta name="twitter:description" content="Mow Marques's hair with a robotaxi lawnmower, time your shave, and count down the Cybercab bet.">
+<meta name="twitter:image" content="https://did-marques-shave-yet.vercel.app/assets/og.jpg">
+<meta name="twitter:image:alt" content="A cartoon Marques head with a lawnmower on top and the words Shave his head!">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
@@ -123,6 +137,30 @@ kbd{display:inline-grid;place-items:center;min-width:22px;height:22px;padding:0 
 .lines button:hover,.lines button:focus-visible{background:var(--bg2);outline:none}
 .lines button small{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
 .nogl{position:absolute;inset:0;display:none;place-items:center;text-align:center;padding:24px;color:var(--muted);font-weight:600}
+
+/* shave game: timer + finish modal */
+.gtime{margin-left:auto;font-family:var(--mono);font-weight:700;font-size:13px;letter-spacing:0;text-transform:none;font-variant-numeric:tabular-nums;color:var(--muted)}
+.gtime.on{color:var(--accent)}
+.win{width:min(640px,calc(100% - 32px));max-height:calc(100dvh - 32px);overflow:auto;padding:0;border:1.5px solid var(--ink);border-radius:22px;background:var(--card);color:var(--ink);box-shadow:6px 6px 0 var(--ink)}
+.win::backdrop{background:#0f0c09cc;backdrop-filter:blur(4px)}
+.win .in{padding:22px 22px 20px;display:grid;gap:14px}
+.win .x{position:absolute;top:12px;right:12px;width:36px;height:36px;border-radius:50%;border:1.5px solid var(--ink);background:var(--card);color:var(--ink);font-size:18px;line-height:1;cursor:pointer}
+.win h2{font-size:clamp(26px,4.6vw,38px);line-height:1.02;letter-spacing:-.035em;padding-right:40px}
+.win h2 em{font-style:normal;color:var(--accent)}
+.win .left{font-size:17px;color:var(--muted)}
+.win .best{display:inline-block;margin-left:6px;padding:2px 8px;border-radius:99px;background:var(--accent2);color:#fff;font-size:11px;vertical-align:middle}
+.win canvas{width:100%;height:auto;display:block;border-radius:14px;border:1.5px solid var(--ink);background:#1c1612}
+.win label{display:grid;gap:6px;font-weight:600;font-size:14px}
+.win input{font:600 17px/1.2 var(--body);padding:10px 12px;border:1.5px solid var(--ink);border-radius:12px;background:var(--bg);color:var(--ink)}
+.win input:focus-visible{outline:3px solid var(--accent);outline-offset:1px}
+.win .acts{display:flex;flex-wrap:wrap;gap:8px}
+.win .acts .btn{font-size:15px;padding:9px 16px}
+.win .btn.hot{background:var(--ink);color:var(--bg)}
+.win .btn.hot:hover{background:var(--accent);border-color:var(--accent)}
+.win .msg{min-height:1.3em;font-size:14px;color:var(--accent2);font-weight:600}
+.win .foot{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+.win .foot button{font:600 13px var(--body);background:none;border:0;padding:0;color:var(--ink);text-decoration:underline;cursor:pointer}
+@media (max-width:520px){.win .in{padding:18px 16px 16px}.win .acts .btn{flex:1 1 auto;text-align:center}}
 
 /* countdown band */
 .band{background:var(--band);color:var(--band-ink)}
@@ -363,6 +401,7 @@ footer strong{color:var(--ink)}
     <div class="bar"><i id="barfill"></i></div>
     <div class="row">
       <button class="btn" id="regrow" type="button">Regrow hair</button>
+      <span class="gtime" id="gtime" title="Your shave time">0.0s</span>
     </div>
   </div>
   <div class="drive">
@@ -553,6 +592,27 @@ footer strong{color:var(--ink)}
 <footer class="wrap">
   <p><strong>This is a fan parody made for fun.</strong> It isn't affiliated with, endorsed by, or connected to Marques Brownlee, MKBHD, Tesla, or Elon Musk. The head is an original cartoon and the mower is a made-up toy, not an official design. No logos or trademarks are used.</p>
 </footer>
+<dialog class="win" id="winDlg" aria-labelledby="winTitle">
+  <button class="x" type="button" id="winClose" aria-label="Close">&times;</button>
+  <div class="in">
+    <span class="mono">Shaved.</span>
+    <h2 id="winTitle">It took you <em id="winTime">0 seconds</em> to shave Marques' hair.</h2>
+    <p class="left" id="winLeft">He only has -- days left with it, if Tesla delivers.</p>
+    <canvas id="shareCv" width="1200" height="675" aria-label="Your share card"></canvas>
+    <label>Your name on the card
+      <input id="winName" type="text" maxlength="24" autocomplete="nickname" placeholder="Anonymous barber">
+    </label>
+    <div class="acts">
+      <button class="btn hot" type="button" id="winCopy">1. Copy card</button>
+      <button class="btn hot" type="button" id="winPost">2. Post on X</button>
+      <button class="btn" type="button" id="winShare" hidden>Share</button>
+      <button class="btn" type="button" id="winSave">Download</button>
+    </div>
+    <p class="msg" id="winMsg" role="status"></p>
+    <div class="foot"><span id="winBest"></span><button type="button" id="winAgain">Regrow and go again</button></div>
+  </div>
+</dialog>
+
 <script>
 // On the real site, X's own script turns the posts above into full embeds. Previews skip it and keep the styled cards.
 const realSite = /^https?:$/.test(location.protocol) && !/claude|anthropic/.test(location.hostname);
@@ -977,7 +1037,7 @@ window.marquesSay = say;
 // Drop the clip in at assets/promise.mp3 (his line from the October 2024 video). Until it's there,
 // the captions play on their own and the mouth flaps along.
 // his own words from the October 2024 video, with the time each word starts (seconds into assets/promise.mp3)
-const PROMISE_LINES = [[[0.0, "Really,"], [0.28, "I"], [0.3, "think"], [0.4, "the"], [0.54, "obvious"], [0.8, "red"], [1.04, "flag,"], [1.42, "the"], [1.48, "biggest"], [1.66, "red"], [1.88, "flag"], [2.08, "to"], [2.24, "me,"], [2.88, "is"], [2.94, "the"], [3.28, "timeline"]], [[3.86, "stuff"], [4.4, "that,"], [4.9, "I"], [4.92, "mean,"], [5.06, "this"], [5.18, "is"], [5.4, "notorious"], [6.12, "Elon"], [6.58, "stuff."]], [[7.18, "He"], [7.26, "gets"], [7.44, "on"], [7.58, "stage,"], [8.0, "he"], [8.06, "says,"], [8.4, "we're"], [8.48, "going"], [8.52, "to"], [8.62, "have"], [8.76, "this"], [8.94, "vehicle"], [9.2, "out"], [9.58, "for"], [10.34, "$30,000"]], [[11.52, "before"], [12.24, "2027."]], [[15.04, "No,"], [15.32, "they're"], [15.34, "not."]], [[15.96, "There's"], [16.2, "just"], [16.34, "no"], [16.56, "way"], [16.84, "that"], [17.24, "they're"], [17.46, "actually"], [17.82, "going"], [18.06, "to"], [18.16, "be"], [18.22, "able"], [18.34, "to"], [18.46, "do"], [18.56, "that."]], [[18.86, "I"], [18.86, "mean,"], [19.36, "if"], [19.48, "they,"], [19.78, "if"], [20.22, "they"], [20.44, "do,"], [20.92, "let's"], [21.18, "say"], [21.34, "they"], [21.48, "do,"], [21.78, "I"], [21.94, "will"], [22.22, "shave"], [22.76, "my"], [22.96, "head"]], [[23.16, "on"], [23.62, "camera"], [23.94, "because"], [24.38, "I'm"], [24.54, "that"], [24.7, "confident."]]];
+const PROMISE_LINES = [[[0.0, "Really,"], [0.28, "I"], [0.3, "think"], [0.4, "the"], [0.54, "obvious"], [0.8, "red"], [1.04, "flag,"], [1.42, "the"], [1.48, "biggest"], [1.66, "red"], [1.88, "flag"], [2.08, "to"], [2.24, "me,"], [2.88, "is"], [2.94, "the"], [3.28, "timeline"]], [[3.86, "stuff"], [4.4, "that,"], [4.9, "I"], [4.92, "mean,"], [5.06, "this"], [5.18, "is"], [5.4, "notorious"], [6.12, "Elon"], [6.58, "stuff."]], [[7.18, "He"], [7.26, "gets"], [7.44, "on"], [7.58, "stage,"], [8.0, "he"], [8.06, "says,"], [8.4, "we're"], [8.48, "going"], [8.52, "to"], [8.62, "have"], [8.76, "this"], [8.94, "vehicle"], [9.2, "out"], [9.58, "for"], [10.34, "$30,000"]], [[11.52, "before"], [12.24, "2027."]], [[13.86, "No,"], [14.14, "they're"], [14.16, "not."]], [[14.78, "There's"], [15.02, "just"], [15.16, "no"], [15.38, "way"], [15.66, "that"], [16.06, "they're"], [16.28, "actually"], [16.64, "going"], [16.88, "to"], [16.98, "be"], [17.04, "able"], [17.16, "to"], [17.28, "do"], [17.38, "that."]], [[17.68, "I"], [17.68, "mean,"], [18.18, "if"], [18.3, "they,"], [18.6, "if"], [19.04, "they"], [19.26, "do,"], [19.74, "let's"], [20.0, "say"], [20.16, "they"], [20.3, "do,"], [20.6, "I"], [20.76, "will"], [21.04, "shave"], [21.58, "my"], [21.78, "head"]], [[21.98, "on"], [22.44, "camera"], [22.76, "because"], [23.2, "I'm"], [23.36, "that"], [23.52, "confident."]]];
 const storyText = document.getElementById('storyText');
 let storyOn = false, storyT = 0, storyAudio = null, storyTimer = 0, storyStart = 0, storyDur = 0, storyLine = -1;
 const storyWords = [];
@@ -997,7 +1057,7 @@ function startStory(){
   storyOn = true; keys.clear(); hero.classList.add('story');
   if (dragged) resetting = true;
   storyLine = -1; showStoryAt(0); storyText.querySelectorAll('span').forEach(w => w.classList.remove('on'));
-  storyStart = performance.now() + 1e9; storyDur = 25500;
+  storyStart = performance.now() + 1e9; storyDur = 24300;
   clearTimeout(storyTimer);
   // no recorded clip in the folder yet: on the real site, play the line straight from his video
   if (!HAS_CLIP && onRealSite) { storyStart = performance.now() + 1e9; ytStory(); return; }
@@ -1057,7 +1117,7 @@ function ytStory(){
 function ytFail(){
   if (!storyOn) return;
   clearInterval(ytPoll); document.getElementById('ytpip').classList.remove('on');
-  storyDur = 25500; storyStart = performance.now(); talkEnd = storyStart + storyDur;
+  storyDur = 24300; storyStart = performance.now(); talkEnd = storyStart + storyDur;
   clearTimeout(storyTimer); storyTimer = setTimeout(endStory, storyDur + 900);
 }
 function endStory(){
@@ -1135,10 +1195,151 @@ function regrowAll(instant){
   }
   lastSaid = -1;
   mowedCount = 0; won = false;
+  gameT0 = 0; gtimeEl.textContent = '0.0s'; gtimeEl.classList.remove('on');
   answerEl.classList.remove('won'); answerEl.textContent = 'No.';
   updateMeter();
 }
 let mowedCount = 0, won = false;
+
+// ---------- the shave game: clipper buzz, a stopwatch from the first cut, and a share card at the end ----------
+const SITE = 'https://did-marques-shave-yet.vercel.app';
+const DEADLINE = Date.parse('2027-01-01T00:00:00-05:00');
+const gtimeEl = document.getElementById('gtime');
+let gameT0 = 0, lastCut = 0;
+const daysLeft = () => Math.max(0, Math.floor((DEADLINE - Date.now()) / 86400000));
+function fmtShort(ms){ const s = ms / 1000; if (s < 60) return s.toFixed(1) + 's'; return Math.floor(s / 60) + ':' + String(Math.floor(s % 60)).padStart(2, '0'); }
+function fmtWords(ms){
+  const s = ms / 1000;
+  if (s < 60) return s.toFixed(1) + ' seconds';
+  const m = Math.floor(s / 60), r = Math.floor(s % 60);
+  return m + (m === 1 ? ' minute' : ' minutes') + (r ? ' ' + r + (r === 1 ? ' second' : ' seconds') : '');
+}
+// clippers: a recorded buzz (assets/clipper.mp3, a seamless 1.6 s loop) played from memory so the loop never gaps
+let buzz = null;
+function buzzInit(){
+  if (buzz) { if (buzz.ctx.state !== 'running') buzz.ctx.resume(); return; }
+  const ctx = voiceCtx();
+  const out = ctx.createGain(); out.gain.value = 0; out.connect(ctx.destination);
+  buzz = { ctx, out, src: null, level: 0, wob: 0 };
+  fetch('assets/clipper.mp3').then(r => r.arrayBuffer()).then(ab => new Promise((res, rej) => ctx.decodeAudioData(ab, res, rej))).then(buf => {
+    // skip any encoder delay at the front so the loop points land on real audio
+    const d = buf.getChannelData(0), lim = Math.min(d.length, Math.round(buf.sampleRate * 0.06));
+    let i0 = 0; while (i0 < lim && Math.abs(d[i0]) < 0.01) i0++;
+    const src = ctx.createBufferSource(); src.buffer = buf; src.loop = true;
+    src.loopStart = i0 / buf.sampleRate; src.loopEnd = Math.min(buf.duration, src.loopStart + 1.6);
+    src.connect(out); src.start(0, src.loopStart);
+    buzz.src = src;
+  }).catch(() => {});
+}
+function buzzSet(level){
+  if (!buzz) return;
+  const t = buzz.ctx.currentTime;
+  if (Math.abs(level - buzz.level) > 0.003) { buzz.level = level; buzz.out.gain.setTargetAtTime(level, t, 0.027); }   // ~80 ms in and out
+  if (buzz.src && level > 0) {
+    buzz.wob += 0.05;
+    const rate = 1 + 0.03 * (0.6 * Math.sin(buzz.wob * 1.3) + 0.4 * Math.sin(buzz.wob * 3.7 + 1));
+    buzz.src.playbackRate.setTargetAtTime(rate, t, 0.1);
+  }
+}
+for (const ev of ['keydown', 'pointerdown']) addEventListener(ev, buzzInit, { capture: true });
+
+// a square, straight-on photo of his head (and the mower) for the card
+function snapshot(S = 900){
+  const pr = renderer.getPixelRatio(), q = head.quaternion.clone(), hp = head.position.clone();
+  head.quaternion.copy(restQ); head.position.set(0, 0, 0);
+  renderer.setPixelRatio(1); renderer.setSize(S, S, false);
+  camera.clearViewOffset(); camera.aspect = 1;
+  const dist = (4.3 / 2) / Math.tan(THREE.MathUtils.degToRad(camera.fov) / 2);
+  const target = new THREE.Vector3(0, 0.22, 0);
+  camera.position.copy(target).addScaledVector(new THREE.Vector3(0, 0.42, 1).normalize(), dist);
+  camera.lookAt(target); camera.updateProjectionMatrix();
+  renderer.render(scene, camera);
+  const c = document.createElement('canvas'); c.width = c.height = S;
+  c.getContext('2d').drawImage(renderer.domElement, 0, 0, S, S);
+  head.quaternion.copy(q); head.position.copy(hp);
+  renderer.setPixelRatio(pr); resize(); renderer.render(scene, camera);
+  return c;
+}
+window.__snap = snapshot;
+const fontsReady = () => Promise.all(['800 100px "Bricolage Grotesque"', '700 40px "Bricolage Grotesque"', '600 30px "Instrument Sans"', '500 20px "JetBrains Mono"']
+  .map(f => document.fonts.load(f).catch(() => {})));
+function pill(ctx, x, y, w, h, r){ ctx.beginPath(); ctx.roundRect ? ctx.roundRect(x, y, w, h, r) : ctx.rect(x, y, w, h); }
+function fitFont(ctx, text, weight, size, family, maxW){
+  ctx.font = `${weight} ${size}px ${family}`;
+  while (size > 20 && ctx.measureText(text).width > maxW) { size -= 4; ctx.font = `${weight} ${size}px ${family}`; }
+  return size;
+}
+function drawCard(cv, { ms, name, days, img }){
+  const ctx = cv.getContext('2d'), W = cv.width, H = cv.height;
+  const D = '"Bricolage Grotesque", "Instrument Sans", sans-serif', B = '"Instrument Sans", sans-serif', M = '"JetBrains Mono", monospace';
+  ctx.fillStyle = '#1c1612'; ctx.fillRect(0, 0, W, H);
+  const g = ctx.createRadialGradient(W * 0.74, H * 0.46, 40, W * 0.74, H * 0.46, 520);
+  g.addColorStop(0, 'rgba(226,71,47,.42)'); g.addColorStop(1, 'rgba(226,71,47,0)');
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+  if (img) ctx.drawImage(img, W - 720, -50, 780, 780);
+  ctx.textBaseline = 'alphabetic';
+  if ('letterSpacing' in ctx) ctx.letterSpacing = '3px';
+  ctx.fillStyle = '#a8977f'; ctx.font = `500 20px ${M}`; ctx.fillText('DID MARQUES SHAVE YET?', 64, 86);
+  if ('letterSpacing' in ctx) ctx.letterSpacing = '-1px';
+  ctx.fillStyle = '#f4ecdc'; ctx.font = `800 60px ${D}`;
+  ctx.fillText('I shaved Marques’', 64, 178); ctx.fillText('head in', 64, 240);
+  const t = fmtShort(ms);
+  if ('letterSpacing' in ctx) ctx.letterSpacing = '-6px';
+  fitFont(ctx, t, 800, 200, D, 520); ctx.fillStyle = '#ff6b4f'; ctx.fillText(t, 58, 420);
+  if ('letterSpacing' in ctx) ctx.letterSpacing = '0px';
+  const who = '— ' + (name || 'An anonymous barber');
+  fitFont(ctx, who, 700, 36, D, 500); ctx.fillStyle = '#f4ecdc'; ctx.fillText(who, 64, 486);
+  ctx.fillStyle = '#c9b9a3'; ctx.font = `500 26px ${B}`;
+  ctx.fillText(`He only has ${days} days left with it,`, 64, 552); ctx.fillText('if Tesla delivers.', 64, 586);
+  ctx.fillStyle = '#a8977f'; ctx.font = `500 19px ${M}`; ctx.fillText(SITE.replace('https://', ''), 64, H - 34);
+  ctx.font = `800 32px ${D}`; const cta = 'Shave his head! →', cw = ctx.measureText(cta).width + 52;
+  pill(ctx, W - 56 - cw, H - 106, cw, 66, 33); ctx.fillStyle = '#e2472f'; ctx.fill();
+  ctx.fillStyle = '#fff'; ctx.fillText(cta, W - 56 - cw + 26, H - 62);
+}
+
+const winDlg = document.getElementById('winDlg'), shareCv = document.getElementById('shareCv');
+const winName = document.getElementById('winName'), winMsg = document.getElementById('winMsg');
+const store = { get(k){ try { return localStorage.getItem(k); } catch (e) { return null; } }, set(k, v){ try { localStorage.setItem(k, v); } catch (e) {} } };
+let run = null;
+function cardBlob(){ return new Promise(res => shareCv.toBlob(res, 'image/png')); }
+function tweetText(){ return `I shaved Marques’ head in ${fmtWords(run.ms)} 💈 He only has ${run.days} days left with it, if Tesla delivers. Beat my time:`; }
+function redraw(){ if (run) drawCard(shareCv, { ...run, name: winName.value.trim() }); }
+async function openWin(ms){
+  const best = Number(store.get('dmsy-best')) || 0, isBest = !best || ms < best;
+  if (isBest) store.set('dmsy-best', String(Math.round(ms)));
+  run = { ms, days: daysLeft(), img: snapshot(900) };
+  document.getElementById('winTime').textContent = fmtWords(ms);
+  document.getElementById('winLeft').textContent = `He only has ${run.days} days left with it, if Tesla delivers.`;
+  document.getElementById('winBest').innerHTML = isBest ? (best ? 'New personal best <span class="best mono">Best</span>' : 'Your first shave. That’s your time to beat.') : `Your best: ${fmtWords(best)}`;
+  winName.value = store.get('dmsy-name') || '';
+  winMsg.textContent = '';
+  document.getElementById('winShare').hidden = !(navigator.canShare && navigator.canShare({ files: [new File([''], 'x.png', { type: 'image/png' })] }));
+  keys.clear(); buzzSet(0);
+  drawCard(shareCv, { ...run, name: winName.value.trim() });
+  if (!winDlg.open) winDlg.showModal();
+  await fontsReady(); redraw();
+}
+winName.addEventListener('input', () => { store.set('dmsy-name', winName.value.trim()); redraw(); });
+document.getElementById('winClose').addEventListener('click', () => winDlg.close());
+document.getElementById('winAgain').addEventListener('click', () => { winDlg.close(); regrowAll(); });
+document.getElementById('winCopy').addEventListener('click', async () => {
+  try {
+    await navigator.clipboard.write([new ClipboardItem({ 'image/png': cardBlob() })]);
+    winMsg.textContent = 'Card copied. Now hit Post on X and paste it into your post.';
+  } catch (e) { winMsg.textContent = 'Your browser won’t copy images. Use Download, then attach it to your post.'; }
+});
+document.getElementById('winPost').addEventListener('click', () => {
+  const u = 'https://x.com/intent/post?text=' + encodeURIComponent(tweetText()) + '&url=' + encodeURIComponent(SITE);
+  window.open(u, '_blank', 'noopener');
+});
+document.getElementById('winSave').addEventListener('click', async () => {
+  const a = document.createElement('a'); a.href = URL.createObjectURL(await cardBlob()); a.download = 'i-shaved-marques.png'; a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+});
+document.getElementById('winShare').addEventListener('click', async () => {
+  try { await navigator.share({ files: [new File([await cardBlob()], 'i-shaved-marques.png', { type: 'image/png' })], text: tweetText() + ' ' + SITE }); } catch (e) {}
+});
+window.__win = openWin;
 
 // ---------- the mower: a toy robotaxi coupe turned into a push mower (no logos) ----------
 const mower = new THREE.Group();
@@ -1259,6 +1460,7 @@ addEventListener('keydown', e => {
   const k = KEYMAP[e.code];
   if (!k || e.metaKey || e.ctrlKey || e.altKey) return;
   if (/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName || '')) return;
+  if (document.getElementById('winDlg').open) return;
   // once the scene has scrolled away, the arrow keys go back to scrolling the page
   if (hero.getBoundingClientRect().bottom < innerHeight * 0.45) { keys.clear(); return; }
   keys.add(k); e.preventDefault();
@@ -1413,6 +1615,7 @@ function frame(){
       }
     }
   }
+  if (cutNow) { lastCut = performance.now(); if (!gameT0) gameT0 = lastCut; }
   if (changed) {
     hairDirty();
     for (let k = 0; k < Math.min(cutNow, 14); k++) spawnClip();
@@ -1424,6 +1627,9 @@ function frame(){
       answerEl.classList.add('won');
       answerEl.textContent = 'In here, yes. In real life, no.';
       for (let k = 0; k < 120; k++) spawnClip();
+      const ms = performance.now() - (gameT0 || performance.now());
+      gtimeEl.textContent = fmtShort(ms); gtimeEl.classList.remove('on');
+      setTimeout(() => openWin(ms), 1400);
     }
   }
 
@@ -1468,7 +1674,7 @@ function frame(){
     const prev = storyT;
     storyT += ((storyOn ? 1 : 0) - storyT) * (1 - Math.exp(-dt * 4));
     if (Math.abs(storyT - prev) > 1e-4 || (storyOn && camera.zoom === 1)) { camera.zoom = 1 - storyT * (camera.aspect > 1 ? 0.12 : 0.0); camera.updateProjectionMatrix(); }
-    head.position.y = storyT * (camera.aspect > 1 ? 0.5 : 0.45);
+    head.position.y = storyT * (camera.aspect > 1 ? 1.02 : 0.45);
     if (storyOn && !dragged) head.quaternion.slerp(restQ, 1 - Math.exp(-dt * 5));
     mower.visible = storyT < 0.25;
     if (storyOn) {
@@ -1511,6 +1717,9 @@ function frame(){
 
   // the factory leans a hair with the mouse, nothing more
   if (bgVid && !reduceMotion) bgVid.style.transform = `scale(1.05) translate(${(-skyLookX * 1.2).toFixed(3)}%, ${(-skyLookY * 0.8).toFixed(3)}%)`;
+  if (gameT0 && !won) { gtimeEl.textContent = fmtShort(performance.now() - gameT0); gtimeEl.classList.add('on'); }
+  const cutting = performance.now() - lastCut < 160;
+  buzzSet(winDlg.open || storyOn || !cutting ? 0 : 0.42 + 0.18 * Math.min(1, speed));
   renderer.render(scene, camera);
 }
 
@@ -1519,7 +1728,7 @@ regrowAll(true);
 // only animate when the hero is on screen
 let visible = true;
 new IntersectionObserver(([e]) => { visible = e.isIntersecting; }).observe(hero);
-renderer.setAnimationLoop(() => { if (visible) frame(); else clock.getDelta(); });
+renderer.setAnimationLoop(() => { if (visible) frame(); else { clock.getDelta(); buzzSet(0); } });
 
 // test hook
 window.__mower = { get pct(){ return mowedCount / HN; }, HN };
