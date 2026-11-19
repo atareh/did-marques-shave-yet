@@ -10,19 +10,20 @@
 <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <meta name="theme-color" content="#1c1612">
+<link rel="canonical" href="https://www.didmarquesshaveyet.com/">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://did-marques-shave-yet.vercel.app/">
+<meta property="og:url" content="https://www.didmarquesshaveyet.com/">
 <meta property="og:site_name" content="Did Marques Shave Yet?">
 <meta property="og:title" content="Shave his head! Did Marques Shave Yet?">
 <meta property="og:description" content="Mow Marques's hair with a robotaxi lawnmower, time your shave, and count down the Cybercab bet. A fan parody.">
-<meta property="og:image" content="https://did-marques-shave-yet.vercel.app/assets/og.jpg">
+<meta property="og:image" content="https://www.didmarquesshaveyet.com/assets/og.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="A cartoon Marques head with a lawnmower on top and the words Shave his head!">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Shave his head! Did Marques Shave Yet?">
 <meta name="twitter:description" content="Mow Marques's hair with a robotaxi lawnmower, time your shave, and count down the Cybercab bet.">
-<meta name="twitter:image" content="https://did-marques-shave-yet.vercel.app/assets/og.jpg">
+<meta name="twitter:image" content="https://www.didmarquesshaveyet.com/assets/og.jpg">
 <meta name="twitter:image:alt" content="A cartoon Marques head with a lawnmower on top and the words Shave his head!">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1209,7 +1210,7 @@ function regrowAll(instant){
 let mowedCount = 0, won = false;
 
 // ---------- the shave game: clipper buzz, a stopwatch from the first cut, and a share card at the end ----------
-const SITE = 'https://did-marques-shave-yet.vercel.app';
+const SITE = 'https://www.didmarquesshaveyet.com';
 const DEADLINE = Date.parse('2027-01-01T00:00:00-05:00');
 const gtimeEl = document.getElementById('gtime');
 let gameT0 = 0, lastCut = 0;
@@ -1316,7 +1317,7 @@ function drawCard(cv, { ms, name, days, img }){
   fitFont(ctx, who, 700, 36, D, 500); ctx.fillStyle = '#f4ecdc'; ctx.fillText(who, 64, 486);
   ctx.fillStyle = '#c9b9a3'; ctx.font = `500 26px ${B}`;
   ctx.fillText(`He only has ${days} days left with it,`, 64, 552); ctx.fillText('if Tesla delivers.', 64, 586);
-  ctx.fillStyle = '#a8977f'; ctx.font = `500 19px ${M}`; ctx.fillText(SITE.replace('https://', ''), 64, H - 34);
+  ctx.fillStyle = '#a8977f'; ctx.font = `500 19px ${M}`; ctx.fillText(SITE.replace(/^https://(www.)?/, ''), 64, H - 34);
   ctx.font = `800 32px ${D}`; const cta = 'Shave his head! →', cw = ctx.measureText(cta).width + 52;
   pill(ctx, W - 56 - cw, H - 106, cw, 66, 33); ctx.fillStyle = '#e2472f'; ctx.fill();
   ctx.fillStyle = '#fff'; ctx.fillText(cta, W - 56 - cw + 26, H - 62);
