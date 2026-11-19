@@ -1,8 +1,8 @@
 // Shared helpers for the leaderboard API: Upstash Redis over REST (no dependencies) and signed run tokens.
 const crypto = require('crypto');
 
-const URL_ = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
-const TOKEN = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
+const URL_ = process.env.LB_KV_REST_API_URL || process.env.LB_REST_API_URL || process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
+const TOKEN = process.env.LB_KV_REST_API_TOKEN || process.env.LB_REST_API_TOKEN || process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
 const KEY = 'dmsy:lb';
 
 function configured() { return !!(URL_ && TOKEN); }
