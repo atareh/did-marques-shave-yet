@@ -1245,6 +1245,7 @@ function regrowAll(instant){
     shake = Math.max(shake, 0.5);
     if (mowedCount > HN * 0.05) say("Much better.", 0.3);
   }
+  faceReset = { t0: performance.now(), from: head.quaternion.clone() };
   lastSaid = -1;
   mowedCount = 0; won = false; clearTimeout(winTimer); winTimer = 0;
   gameT0 = 0; lastCut = 0; setTimer(0, 'idle'); runTok = null;
@@ -1646,6 +1647,8 @@ function updateMeter(){
 // ---------- loop ----------
 const clock = new THREE.Clock();
 const heading = new THREE.Vector3(1, Math.sin(MOW_A)*0.45, -Math.cos(MOW_A)*0.45).normalize(); // parked three-quarters to the right so the car's profile shows
+const heading0 = heading.clone();
+let faceReset = null;   // Restart eases him back to facing you
 const right = new THREE.Vector3(1, 0, 0);
 let speed = 0, hintHidden = false;
 const mowerScreen = new THREE.Vector3();
@@ -1708,6 +1711,13 @@ function frame(){
     }
   }
   speed += (want - speed) * (1 - Math.exp(-dt * 5));
+  if (faceReset) {
+    // Restart: ease back to the front-facing pose over half a second, with no leftover spin or drag
+    const k = Math.min(1, (performance.now() - faceReset.t0) / 500), e = k * k * (3 - 2 * k);
+    head.quaternion.slerpQuaternions(faceReset.from, restQ, e);
+    speed = 0; dragged = false; resetting = false; dragYaw = 0; dragPitch = 0; heading.copy(heading0);
+    if (k >= 1) { faceReset = null; mowBlend = 0; }
+  }
 
   // keep heading tangent at the mower spot
   heading.addScaledVector(Pw, -heading.dot(Pw)).normalize();
@@ -1893,7 +1903,7 @@ new IntersectionObserver(([e]) => { visible = e.isIntersecting; }).observe(hero)
 renderer.setAnimationLoop(() => { if (visible) frame(); else { clock.getDelta(); buzzSleep(); } });
 
 // test hook
-window.__mower = { get pct(){ return mowedCount / HN; }, get actual(){ return countCut() / HN; }, get regrowing(){ return !!regrow; }, get won(){ return won; }, HN, cutAll(){ for (let i = 0; i < NV; i++) if (hairT[i] > 0) { hairState[i] = 0.3; writeHair(i); } hairDirty(); } };
+window.__mower = { get pct(){ return mowedCount / HN; }, get actual(){ return countCut() / HN; }, get regrowing(){ return !!regrow; }, get won(){ return won; }, get faceErr(){ return head.quaternion.angleTo(restQ); }, HN, cutAll(){ for (let i = 0; i < NV; i++) if (hairT[i] > 0) { hairState[i] = 0.3; writeHair(i); } hairDirty(); } };
 window.__jaw = (v) => { talkEnd = 0; jawNow = v; setJaw(v); window.__jawHold = v; };
 </script>
 </body>
