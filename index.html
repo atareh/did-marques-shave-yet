@@ -405,6 +405,10 @@ footer strong{color:var(--ink)}
   .sources .mono{grid-column:1 / -1}
 }
 </style>
+<script>
+!function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture register register_once register_for_session unregister unregister_for_session getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSessionId getSurveys getActiveMatchingSurveys renderSurvey canRenderSurvey getNextSurveyStep identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException loadToolbar get_property getSessionProperty createPersonProfile opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing clear_opt_in_out_capturing debug".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+posthog.init('phc_rEbrL7KLtw4K8UUr3yi8Jq3nAMLCp9TbGf8dLdYTjQJA', { api_host: 'https://us.i.posthog.com', person_profiles: 'identified_only', autocapture: true, capture_pageview: true });
+</script>
 </head>
 <body>
 <header class="hero" id="hero">
@@ -428,7 +432,7 @@ footer strong{color:var(--ink)}
     </div>
   </div>
   <div class="bigtime" id="bigtime" aria-label="Shave timer"><span class="lab"><span class="mono">Shave timer</span><span class="hint2" id="gtimeHint">starts on first cut</span></span><b id="gtime">0.0s</b></div>
-  <aside class="tops" id="tops" aria-label="Top times"><span class="mono" id="topsLbl">Top times · this device</span><ol id="topsList"></ol></aside>
+  <aside class="tops ph-no-capture" id="tops" aria-label="Top times"><span class="mono" id="topsLbl">Top times · this device</span><ol id="topsList"></ol></aside>
   <div class="bubble" id="bubble" role="status" aria-live="polite"></div>
   <div class="ytpip" id="ytpip" aria-label="Source video"><div id="ytplayer"></div></div>
   <div class="story-cap" id="storyCap" aria-live="polite">
@@ -439,7 +443,7 @@ footer strong{color:var(--ink)}
     <div class="lbl"><span class="mono">Shave progress</span><b id="pct">0%</b></div>
     <div class="bar"><i id="barfill"></i></div>
     <div class="row">
-      <button class="btn" id="regrow" type="button">Regrow hair</button>
+      <button class="btn" id="regrow" type="button">Restart</button>
       <button class="btn mute" id="mute" type="button" aria-label="Clipper sound" aria-pressed="false">&#x1F50A;</button>
     </div>
   </div>
@@ -494,7 +498,7 @@ footer strong{color:var(--ink)}
       <li><span class="mono d">November 13, 2026</span><span class="dot"></span><div class="body"><h3>Orders open, by invitation</h3><p>Tesla opens invite-only orders: $29,990, a required $299 a month Autonomy subscription, a $1,000 deposit, Texas Robotaxi cities only, deliveries estimated for December. Marques gets an invite.</p>
       </div></li>
       <li class="now"><span class="mono d">November 14, 2026</span><span class="dot"></span><div class="body"><h3>"A chicken"<span class="tag">Latest</span></h3><p>Marques says his hair is safe: no deliveries yet, and invite-only isn't really public. Musk calls him a chicken. Marques orders one anyway. The whole back-and-forth is below.</p></div></li>
-      <li class="end"><span class="mono d">December 31, 2026</span><span class="dot"></span><div class="body"><h3>Deadline</h3><p>Either a regular person has a $30k Cybercab, or the clippers stay in the drawer.</p></div></li>
+      <li class="end"><span class="mono d">December 31, 2026</span><span class="dot"></span><div class="body"><h3>Deadline</h3><p>Either a regular person gets the Cybercab in time and Marques loses his hair, or the clippers stay in the drawer...</p></div></li>
     </ol>
 
     <div class="beef" id="beef">
@@ -638,15 +642,15 @@ footer strong{color:var(--ink)}
     <h2 id="winTitle">It took you <em id="winTime">0 seconds</em> to shave Marques' hair.</h2>
     <p class="left" id="winLeft">He only has -- days left with his hair, if Tesla delivers.</p>
     <label>Put your name on your time
-      <input id="winName" type="text" maxlength="24" autocomplete="nickname" placeholder="Your name" required>
+      <input id="winName" class="ph-no-capture" type="text" maxlength="24" autocomplete="nickname" placeholder="Your name" required>
     </label>
     <p class="msg err" id="nameMsg" role="status"></p>
     <div class="acts"><button class="btn hot" type="submit" id="winSaveName">Save my time &rarr;</button></div>
-    <div class="foot"><span id="winBest"></span><button type="button" class="again">Regrow and go again</button></div>
+    <div class="foot"><span id="winBest"></span><button type="button" class="again">Restart and go again</button></div>
   </form>
   <div class="in step" id="step2" hidden>
     <span class="mono">Step 2 of 2 · Share it</span>
-    <h2 id="winTitle2">Nice cut, <em id="winWho">barber</em>.</h2>
+    <h2 id="winTitle2">Nice cut, <em id="winWho" class="ph-no-capture">barber</em>.</h2>
     <p class="left" id="winRank"></p>
     <canvas id="shareCv" width="1200" height="675" aria-label="Your share card"></canvas>
     <div class="acts">
@@ -655,7 +659,7 @@ footer strong{color:var(--ink)}
       <button class="btn" type="button" id="winSave">Download</button>
     </div>
     <p class="msg" id="winMsg" role="status"></p>
-    <div class="foot"><button type="button" id="winBack">Change name</button><button type="button" class="again">Regrow and go again</button></div>
+    <div class="foot"><button type="button" id="winBack">Change name</button><button type="button" class="again">Restart and go again</button></div>
   </div>
 </dialog>
 
@@ -1098,8 +1102,10 @@ function showStoryAt(sec){
   PROMISE_LINES[li].forEach(([t0], i) => storyWords[i]?.classList.toggle('on', sec >= t0));
 }
 showStoryAt(0);
+const track = (ev, props) => { try { window.posthog?.capture(ev, props); } catch (e) {} };
 function startStory(){
   if (storyOn) return;
+  track('story_played');
   storyOn = true; keys.clear(); hero.classList.add('story');
   if (dragged) resetting = true;
   storyLine = -1; showStoryAt(0); storyText.querySelectorAll('span').forEach(w => w.classList.remove('on'));
@@ -1257,6 +1263,19 @@ function setTimer(ms, state){
   gtimeEl.textContent = fmtShort(ms);
   bigtimeEl.classList.toggle('on', state === 'on'); bigtimeEl.classList.toggle('done', state === 'done');
 }
+// story mode lifts the head so his chin clears the caption card by a fixed gap, whatever the screen size
+let storyLift = 0.75, storyLiftFor = '', chinRestY = null;
+function calcStoryLift(){
+  const capEl = document.querySelector('.story-cap'), h = hero.clientHeight;
+  if (chinRestY === null) { const y0 = head.position.y; head.position.y = 0; chinRestY = new THREE.Box3().setFromObject(head).min.y; head.position.y = y0; }
+  const want = h - 32 - (capEl ? capEl.offsetHeight : 130) - 28;
+  const z0 = camera.zoom; camera.zoom = 1 - (camera.aspect > 1 ? 0.12 : 0); camera.updateProjectionMatrix();
+  const sy = y => (1 - new THREE.Vector3(0, y, 0).project(camera).y) / 2 * h;
+  const a = sy(chinRestY), b = sy(chinRestY + 1);
+  camera.zoom = z0; camera.updateProjectionMatrix();
+  storyLift = Math.min(1.25, Math.max(0.2, (a - want) / (a - b)));
+  storyLiftFor = hero.clientWidth + 'x' + h;
+}
 // the big timer floats just off the right side of his head, overlapping the scene
 const topsEl = document.getElementById('tops');
 function placeHud(){
@@ -1401,6 +1420,7 @@ function saveTop(name, ms, id){
 // the table shows the shared leaderboard when it's reachable, and this device's own top five when it isn't
 let runTok = null, globalTop = null;
 function lbStart(){
+  track('shave_started');
   runTok = fetch('/api/start', { method: 'POST' }).then(r => r.ok ? r.json() : null).then(j => j && j.token).catch(() => null);
 }
 function renderTops(meId){
@@ -1423,6 +1443,7 @@ async function submitScore(name, ms){
     runTok = null;
     if (Array.isArray(j.top)) globalTop = j.top;
     renderTops(j.id);
+    if (j.rank) track('leaderboard_rank', { rank: j.rank });
     if (j.rank) rankEl.textContent = j.rank <= 10 ? `You’re #${j.rank} on the leaderboard.` : `You’re #${j.rank} on the leaderboard. Top 10 is ${fmtWords(globalTop[globalTop.length - 1].ms)}.`;
   } catch (e) {}
 }
@@ -1430,6 +1451,7 @@ function showStep(n){ step1.hidden = n !== 1; step2.hidden = n !== 2; (n === 1 ?
 async function openWin(ms){
   const best = Number(store.get('dmsy-best')) || 0, isBest = !best || ms < best;
   if (isBest) store.set('dmsy-best', String(Math.round(ms)));
+  track('shave_finished', { seconds: Math.round(ms / 100) / 10 });
   run = { ms, days: daysLeft(), img: snapshot(900), id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6) };
   document.getElementById('winTime').textContent = fmtWords(ms);
   document.getElementById('winLeft').textContent = `He only has ${run.days} days left with his hair, if Tesla delivers.`;
@@ -1447,12 +1469,14 @@ step1.addEventListener('submit', async e => {
   if (!name) { nameMsg.textContent = 'Add your name to save your time.'; winName.focus(); return; }
   nameMsg.textContent = '';
   store.set('dmsy-name', name);
+  track('name_submitted');
   saveTop(name, run.ms, run.id); if (!Array.isArray(globalTop)) renderTops(run.id);
   if (!run.sent) { run.sent = true; submitScore(name, run.ms); }
   document.getElementById('winWho').textContent = name;
   await fontsReady();
   drawCard(shareCv, { ...run, name });
   showStep(2);
+  track('share_card_shown');
 });
 document.getElementById('winBack').addEventListener('click', () => showStep(1));
 winName.addEventListener('input', () => { if (winName.value.trim()) nameMsg.textContent = ''; });
@@ -1465,6 +1489,7 @@ document.getElementById('winCopy').addEventListener('click', async () => {
   } catch (e) { winMsg.textContent = 'Your browser won’t copy images. Use Download, then attach it to your post.'; }
 });
 document.getElementById('winPost').addEventListener('click', () => {
+  track('post_to_x_clicked');
   const u = 'https://x.com/intent/post?text=' + encodeURIComponent(tweetText());
   window.open(u, '_blank', 'noopener');
 });
@@ -1809,7 +1834,8 @@ function frame(){
     const prev = storyT;
     storyT += ((storyOn ? 1 : 0) - storyT) * (1 - Math.exp(-dt * 4));
     if (Math.abs(storyT - prev) > 1e-4 || (storyOn && camera.zoom === 1)) { camera.zoom = 1 - storyT * (camera.aspect > 1 ? 0.12 : 0.0); camera.updateProjectionMatrix(); }
-    head.position.y = storyT * (camera.aspect > 1 ? 1.18 : 0.45);
+    if (storyOn && storyLiftFor !== hero.clientWidth + 'x' + hero.clientHeight) calcStoryLift();
+    head.position.y = storyT * storyLift;
     if (storyOn && !dragged) head.quaternion.slerp(restQ, 1 - Math.exp(-dt * 5));
     mower.visible = storyT < 0.25;
     if (storyOn) {
