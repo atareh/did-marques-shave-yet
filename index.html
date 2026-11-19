@@ -121,11 +121,11 @@ p{margin:0}
 .seg button{white-space:nowrap;font:600 12px/1 var(--body);border:0;background:transparent;color:var(--ink);padding:7px 10px;cursor:pointer}
 .seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
 .btn:focus-visible,.dpad button:focus-visible,.seg button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
-.bubble{position:absolute;left:calc(50% + min(19vw,250px));top:34%;max-width:min(270px,30vw);background:#fff;color:#1c1612;border:2px solid #1c1612;
+.bubble{position:absolute;right:calc(50% + min(19vw,250px));top:38%;max-width:min(270px,30vw);background:#fff;color:#1c1612;border:2px solid #1c1612;
   border-radius:18px;padding:10px 16px;font-family:var(--display);font-weight:700;font-size:clamp(16px,1.7vw,20px);line-height:1.2;letter-spacing:-.01em;
-  box-shadow:4px 4px 0 #1c1612;pointer-events:none;opacity:0;transform:scale(.6) rotate(3deg);transform-origin:0 100%;transition:opacity .18s,transform .25s cubic-bezier(.2,1.6,.4,1)}
-.bubble.show{opacity:1;transform:scale(1) rotate(1.5deg)}
-.bubble::after{content:"";position:absolute;left:-14px;bottom:16px;border:8px solid transparent;border-right-color:#1c1612;border-left:0}
+  box-shadow:4px 4px 0 #1c1612;pointer-events:none;opacity:0;transform:scale(.6) rotate(-3deg);transform-origin:100% 100%;transition:opacity .18s,transform .25s cubic-bezier(.2,1.6,.4,1)}
+.bubble.show{opacity:1;transform:scale(1) rotate(-1.5deg)}
+.bubble::after{content:"";position:absolute;right:-14px;bottom:16px;border:8px solid transparent;border-left-color:#1c1612;border-right:0}
 .drive{position:absolute;right:28px;bottom:26px;display:flex;flex-direction:column;align-items:flex-end;gap:10px}
 .hint{display:flex;align-items:center;gap:6px;color:var(--ink);font-weight:600;font-size:13px;pointer-events:none;transition:opacity .5s;background:color-mix(in srgb,var(--card) 85%,transparent);padding:5px 8px 5px 12px;border-radius:99px}
 kbd{display:inline-grid;place-items:center;min-width:22px;height:22px;padding:0 5px;font-family:var(--mono);font-size:11px;font-weight:700;color:var(--ink);
@@ -385,7 +385,7 @@ footer strong{color:var(--ink)}
   .drive{right:16px;bottom:16px}
   .lines{left:16px;right:16px;width:auto;bottom:calc(16px + var(--meter-h,150px) + 12px)}
   .dpad{grid-template-columns:repeat(3,54px);grid-template-rows:repeat(2,54px);gap:5px}
-  .bubble{left:auto;right:16px;top:23%;max-width:56vw}
+  .bubble{right:auto;left:12px;top:41%;max-width:46vw;font-size:15px;padding:8px 12px}
   .bubble::after{display:none}
   .tile{padding-left:10px}
   main section{padding:56px 0}
