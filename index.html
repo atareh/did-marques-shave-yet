@@ -73,14 +73,14 @@ p{margin:0}
 #scene{position:absolute;inset:0;width:100%;height:100%;display:block;cursor:grab;touch-action:pan-y}
 #scene.dragging{cursor:grabbing}
 .hud{position:absolute;left:0;right:0;top:0;padding:26px 28px 0;pointer-events:none}
-.title{text-align:center}
-.title h1{font-size:min(4.4vw,64px);line-height:.95;letter-spacing:-.045em;white-space:nowrap}
-.title .headrow{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:6px 16px}
+.title{text-align:left;max-width:min(54vw,760px)}
+.title h1{font-size:min(3.9vw,58px);line-height:.95;letter-spacing:-.045em;white-space:nowrap}
+.title .headrow{display:flex;align-items:center;justify-content:flex-start;flex-wrap:wrap;gap:6px 16px}
 .title .headrow .answer{font-size:min(3vw,40px);padding:2px 14px 6px;flex:none}
-.title .sub{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:8px 12px;margin-top:10px}
+.title .sub{display:flex;align-items:center;justify-content:flex-start;flex-wrap:wrap;gap:8px 12px;margin-top:10px}
 .title p{font-size:clamp(14px,1.3vw,17px);color:var(--ink);font-weight:600;max-width:52ch;line-height:1.35;text-shadow:0 0 12px var(--fade),0 0 4px var(--fade)}
 .title h1{text-shadow:0 0 24px color-mix(in srgb,var(--fade) 70%,transparent)}
-.timeleft{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:10px}
+.timeleft{display:flex;align-items:center;justify-content:flex-start;gap:10px;margin-top:10px}
 .timeleft{pointer-events:auto;flex-wrap:wrap}
 .timeleft > .mono{color:var(--ink);font-weight:700;background:var(--fade);padding:4px 8px;border-radius:6px}
 .hear{font:700 14px/1 var(--body);color:#fff;background:var(--accent);border:1.5px solid var(--ink);border-radius:99px;padding:9px 14px;cursor:pointer;box-shadow:3px 3px 0 var(--ink);transition:transform .15s}
@@ -148,15 +148,16 @@ kbd{display:inline-grid;place-items:center;min-width:22px;height:22px;padding:0 
 .nogl{position:absolute;inset:0;display:none;place-items:center;text-align:center;padding:24px;color:var(--muted);font-weight:600}
 
 /* shave game: timer + finish modal */
-.bigtime{position:absolute;left:50%;top:var(--bt-top,170px);transform:translateX(-50%);display:flex;align-items:center;gap:10px;pointer-events:none;white-space:nowrap;
-  background:color-mix(in srgb,var(--band) 78%,transparent);color:var(--band-ink);border-radius:99px;padding:5px 16px 6px;box-shadow:0 10px 30px #0006;backdrop-filter:blur(6px);transition:opacity .4s}
-.bigtime .lab{display:flex;flex-direction:column;gap:1px;text-align:right}
-.bigtime .mono{color:var(--band-muted);font-size:10px}
-.bigtime b{font-family:var(--mono);font-weight:700;font-size:clamp(22px,2.2vw,28px);line-height:1;letter-spacing:-.03em;font-variant-numeric:tabular-nums;min-width:4.1ch;text-align:left}
-.bigtime .hint2{font-size:11px;line-height:1.1;font-weight:600;color:var(--band-muted)}
-.bigtime.on b{color:var(--accent)}
+.bigtime{position:absolute;left:var(--bt-left,62%);top:var(--bt-top,40%);transform:translateY(-50%) rotate(-4deg);display:flex;flex-direction:column;align-items:flex-start;gap:2px;pointer-events:none;white-space:nowrap;transition:opacity .4s;
+  --stroke:#111}
+.bigtime .lab{display:flex;flex-direction:column;gap:0;padding-left:4px}
+.bigtime .mono{color:#fff;font-size:12px;letter-spacing:.14em;text-shadow:0 0 3px #000,0 1px 2px #000,0 0 10px #000a}
+.bigtime b{font-family:var(--display);font-weight:800;font-size:clamp(54px,7.4vw,118px);line-height:.9;letter-spacing:-.04em;font-variant-numeric:tabular-nums;color:#fff;
+  -webkit-text-stroke:.07em var(--stroke);paint-order:stroke fill;text-shadow:.05em .06em 0 var(--stroke),0 10px 30px #0008}
+.bigtime .hint2{font-size:13px;line-height:1.2;font-weight:700;color:#fff;text-shadow:0 0 3px #000,0 1px 2px #000,0 0 10px #000a}
+.bigtime.on b{color:#fff}
 .bigtime.on .hint2,.bigtime.done .hint2{visibility:hidden}
-.bigtime.done b{color:var(--accent2)}
+.bigtime.done b{color:var(--accent)}
 .hero.story .bigtime,.hero.story .tops{opacity:0}
 .tops{position:absolute;right:28px;top:var(--tops-top,250px);width:210px;padding:10px 12px;border-radius:14px;background:color-mix(in srgb,var(--band) 70%,transparent);color:var(--band-ink);backdrop-filter:blur(4px);opacity:.9;transition:opacity .4s}
 .tops .mono{display:block;color:var(--band-muted);font-size:10px;margin-bottom:6px}
@@ -167,7 +168,7 @@ kbd{display:inline-grid;place-items:center;min-width:22px;height:22px;padding:0 
 .tops li b,.wtops li b{font-family:var(--mono);font-weight:700;font-size:12.5px}
 .tops li.me b,.wtops li.me b{color:var(--accent)}
 .tops .empty{display:block;font-size:13px;color:var(--band-muted)}
-@media (max-width:760px){.tops{display:none}.bigtime{padding:4px 13px 5px}.bigtime b{font-size:22px}.bigtime .hint2{font-size:10.5px}}
+@media (max-width:760px){.tops{display:none}.bigtime b{font-size:clamp(40px,12vw,60px)}.bigtime .mono{font-size:10px}.bigtime .hint2{font-size:11px}}
 .win .msg.err{color:var(--accent)}
 .win .step[hidden]{display:none}
 .btn.mute{padding:3px 9px;font-size:14px;line-height:1.2}
@@ -367,6 +368,7 @@ footer strong{color:var(--ink)}
   body{font-size:16px}
   .wrap{padding:0 16px}
   .hud{padding:18px 16px 0}
+  .title{max-width:none}
   .title h1{font-size:6.9vw}
   .title .headrow{gap:6px 8px;flex-wrap:nowrap}
   .title .headrow:has(.won){flex-wrap:wrap}
@@ -1255,17 +1257,21 @@ function setTimer(ms, state){
   gtimeEl.textContent = fmtShort(ms);
   bigtimeEl.classList.toggle('on', state === 'on'); bigtimeEl.classList.toggle('done', state === 'done');
 }
-// the big timer sits just above the mower on his crown, and never over the title
+// the big timer floats just off the right side of his head, overlapping the scene
 const topsEl = document.getElementById('tops');
 function placeHud(){
   camera.updateProjectionMatrix();
-  const r = hero.getBoundingClientRect(), v = new THREE.Vector3(0, 2.32, 0).project(camera);
-  const crown = (1 - v.y) / 2 * r.height;
+  const r = hero.getBoundingClientRect(), narrow = r.width < 760;
+  const v = new THREE.Vector3(narrow ? 0.55 : 1.2, narrow ? 1.75 : 1.15, 0.4).project(camera);
+  let x = (v.x + 1) / 2 * r.width, y = (1 - v.y) / 2 * r.height;
   const sub = document.querySelector('.hud .timeleft') || document.querySelector('.hud .title');
-  const floor = sub ? sub.getBoundingClientRect().bottom - r.top + 10 : 120;
-  const top = Math.max(floor, crown - bigtimeEl.offsetHeight - 6);
-  hero.style.setProperty('--bt-top', top.toFixed(0) + 'px');
-  hero.style.setProperty('--tops-top', Math.max(floor, crown).toFixed(0) + 'px');
+  const floor = sub ? sub.getBoundingClientRect().bottom - r.top + 16 : 120;
+  const bw = bigtimeEl.offsetWidth || 200, bh = bigtimeEl.offsetHeight || 100;
+  x = Math.min(x, r.width - bw - 16);
+  y = Math.max(y, floor + bh / 2);
+  hero.style.setProperty('--bt-left', x.toFixed(0) + 'px');
+  hero.style.setProperty('--bt-top', y.toFixed(0) + 'px');
+  hero.style.setProperty('--tops-top', '26px');
 }
 let gameT0 = 0, lastCut = 0;
 const daysLeft = () => Math.max(0, Math.floor((DEADLINE - Date.now()) / 86400000));
@@ -1519,7 +1525,7 @@ function resize(){
   renderer.setSize(w, h, false);
   camera.aspect = w / h;
   // keep the whole head width in view on narrow screens
-  const fitW = camera.aspect < 0.8 ? 3.35 : 3.7, fitH = camera.aspect > 1.3 ? 4.35 : camera.aspect < 0.8 ? 4.15 : 4.4;
+  const fitW = camera.aspect < 0.8 ? 2.55 : 3.4, fitH = camera.aspect > 1.3 ? 3.55 : camera.aspect < 0.8 ? 3.3 : 3.8;
   const vfov = THREE.MathUtils.degToRad(camera.fov);
   const distH = (fitH/2) / Math.tan(vfov/2);
   const distW = (fitW/2) / (Math.tan(vfov/2) * camera.aspect);
@@ -1530,7 +1536,7 @@ function resize(){
   camera.position.copy(target).addScaledVector(dir, dist);
   camera.lookAt(target);
   // the title runs across the top, so the head sits centred and a little low
-  camera.setViewOffset(w, h, 0, camera.aspect > 1.3 ? -h*0.15 : camera.aspect < 0.8 ? -h*0.085 : -h*0.13, w, h);
+  camera.setViewOffset(w, h, 0, camera.aspect > 1.3 ? -h*0.07 : camera.aspect < 0.8 ? -h*0.075 : -h*0.08, w, h);
   placeHud();
   camera.updateProjectionMatrix();
 }
