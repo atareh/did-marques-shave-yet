@@ -146,6 +146,7 @@ kbd{display:inline-grid;place-items:center;min-width:22px;height:22px;padding:0 
 /* shave game: timer + finish modal */
 .gtime{margin-left:auto;font-family:var(--mono);font-weight:700;font-size:13px;letter-spacing:0;text-transform:none;font-variant-numeric:tabular-nums;color:var(--muted)}
 .gtime.on{color:var(--accent)}
+.btn.mute{padding:3px 9px;font-size:14px;line-height:1.2}
 .win{width:min(640px,calc(100% - 32px));max-height:calc(100dvh - 32px);overflow:auto;padding:0;border:1.5px solid var(--ink);border-radius:22px;background:var(--card);color:var(--ink);box-shadow:6px 6px 0 var(--ink)}
 .win::backdrop{background:#0f0c09cc;backdrop-filter:blur(4px)}
 .win .in{padding:22px 22px 20px;display:grid;gap:14px}
@@ -406,6 +407,7 @@ footer strong{color:var(--ink)}
     <div class="bar"><i id="barfill"></i></div>
     <div class="row">
       <button class="btn" id="regrow" type="button">Regrow hair</button>
+      <button class="btn mute" id="mute" type="button" aria-label="Clipper sound" aria-pressed="false">&#x1F50A;</button>
       <span class="gtime" id="gtime" title="Your shave time">0.0s</span>
     </div>
   </div>
@@ -1221,7 +1223,10 @@ function fmtWords(ms){
 }
 // clippers: a recorded buzz (assets/clipper.mp3, a seamless 1.6 s loop) played from memory so the loop never gaps
 let buzz = null;
-function buzzInit(){
+let muted = (() => { try { return localStorage.getItem('dmsy-mute') === '1'; } catch (e) { return false; } })();
+function buzzInit(e){
+  if (muted) return;
+  if (e && e.type === 'keydown' && !KEYS_DRIVE.has(e.code)) return;
   if (buzz) { if (buzz.ctx.state !== 'running') buzz.ctx.resume(); return; }
   const ctx = voiceCtx();
   const out = ctx.createGain(); out.gain.value = 0; out.connect(ctx.destination);
@@ -1238,15 +1243,30 @@ function buzzInit(){
 }
 function buzzSet(level){
   if (!buzz) return;
-  const t = buzz.ctx.currentTime;
-  if (Math.abs(level - buzz.level) > 0.003) { buzz.level = level; buzz.out.gain.setTargetAtTime(level, t, 0.027); }   // ~80 ms in and out
+  if (muted) level = 0;
+  const t = buzz.ctx.currentTime, g = buzz.out.gain;
+  if (level === 0) {
+    // off means off: drop anything scheduled and fade out over ~60 ms
+    if (buzz.level !== 0) { g.cancelScheduledValues(t); g.setValueAtTime(g.value, t); g.setTargetAtTime(0, t, 0.02); buzz.level = 0; }
+    return;
+  }
+  if (Math.abs(level - buzz.level) > 0.003) { buzz.level = level; g.cancelScheduledValues(t); g.setValueAtTime(g.value, t); g.setTargetAtTime(level, t, 0.027); }   // ~80 ms in
   if (buzz.src && level > 0) {
     buzz.wob += 0.05;
     const rate = 1 + 0.03 * (0.6 * Math.sin(buzz.wob * 1.3) + 0.4 * Math.sin(buzz.wob * 3.7 + 1));
     buzz.src.playbackRate.setTargetAtTime(rate, t, 0.1);
   }
 }
-for (const ev of ['keydown', 'pointerdown']) addEventListener(ev, buzzInit, { capture: true });
+const KEYS_DRIVE = new Set(['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'KeyW', 'KeyA', 'KeyS', 'KeyD']);
+addEventListener('keydown', buzzInit, { capture: true });
+document.getElementById('dpad').addEventListener('pointerdown', buzzInit, { capture: true });
+// no clippers in a background tab or once the scene has scrolled away
+function buzzSleep(){ if (buzz) { buzzSet(0); if (!storyOn && buzz.ctx.state === 'running') buzz.ctx.suspend(); } }
+document.addEventListener('visibilitychange', () => { if (document.hidden) buzzSleep(); });
+const muteBtn = document.getElementById('mute');
+function showMute(){ muteBtn.setAttribute('aria-pressed', String(muted)); muteBtn.textContent = muted ? '\u{1F507}' : '\u{1F50A}'; muteBtn.title = muted ? 'Clipper sound off' : 'Clipper sound on'; }
+muteBtn.addEventListener('click', () => { muted = !muted; try { localStorage.setItem('dmsy-mute', muted ? '1' : '0'); } catch (e) {} if (muted) buzzSet(0); showMute(); });
+showMute();
 
 // a square, straight-on photo of his head (and the mower) for the card
 function snapshot(S = 900){
@@ -1723,8 +1743,9 @@ function frame(){
   // the factory leans a hair with the mouse, nothing more
   if (bgVid && !reduceMotion) bgVid.style.transform = `scale(1.05) translate(${(-skyLookX * 1.2).toFixed(3)}%, ${(-skyLookY * 0.8).toFixed(3)}%)`;
   if (gameT0 && !won) { gtimeEl.textContent = fmtShort(performance.now() - gameT0); gtimeEl.classList.add('on'); }
-  const cutting = performance.now() - lastCut < 160;
-  buzzSet(winDlg.open || storyOn || !cutting ? 0 : 0.42 + 0.18 * Math.min(1, speed));
+  // buzz only while a drive control is held and hair is actually coming off
+  const cutting = keys.size > 0 && !dragged && performance.now() - lastCut < 120;
+  buzzSet(winDlg.open || storyOn || won || !cutting ? 0 : 0.42 + 0.18 * Math.min(1, speed));
   renderer.render(scene, camera);
 }
 
@@ -1733,7 +1754,7 @@ regrowAll(true);
 // only animate when the hero is on screen
 let visible = true;
 new IntersectionObserver(([e]) => { visible = e.isIntersecting; }).observe(hero);
-renderer.setAnimationLoop(() => { if (visible) frame(); else { clock.getDelta(); buzzSet(0); } });
+renderer.setAnimationLoop(() => { if (visible) frame(); else { clock.getDelta(); buzzSleep(); } });
 
 // test hook
 window.__mower = { get pct(){ return mowedCount / HN; }, HN };
