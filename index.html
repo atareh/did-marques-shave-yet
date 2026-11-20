@@ -135,7 +135,9 @@ kbd{display:inline-grid;place-items:center;min-width:22px;height:22px;padding:0 
   background:var(--card);border:1.5px solid var(--ink);border-radius:5px;box-shadow:0 2px 0 var(--ink)}
 .dpad{display:grid;grid-template-columns:repeat(3,50px);grid-template-rows:repeat(2,50px);gap:6px}
 .dpad button{font-size:20px;border:1.5px solid var(--ink);border-radius:12px;background:var(--card);color:var(--ink);box-shadow:0 3px 0 var(--ink);cursor:pointer;
-  touch-action:none;user-select:none;-webkit-user-select:none}
+  touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
+.dpad{touch-action:none;user-select:none;-webkit-user-select:none}
+.nudge{display:none}
 .dpad button:active,.dpad button.on{transform:translateY(2px);box-shadow:0 1px 0 var(--ink);background:var(--gold)}
 .dpad [data-k=u]{grid-column:2}.dpad [data-k=l]{grid-column:1;grid-row:2}.dpad [data-k=d]{grid-column:2;grid-row:2}.dpad [data-k=r]{grid-column:3;grid-row:2}
 @media (pointer:coarse){.hint{display:none}}
@@ -208,6 +210,10 @@ kbd{display:inline-grid;place-items:center;min-width:22px;height:22px;padding:0 
 .win .btn.hot{background:linear-gradient(90deg,#aa885a,#b29163,#bfa278,#caaf85,#d2b88c);color:#fff;font-weight:700;border-color:#1b140c;border-radius:8px;text-shadow:0 1px 1px #1b140c55}
 .win .btn.hot:hover{background:linear-gradient(90deg,#b8966a,#d9c29a);border-color:#1b140c}
 .win .msg{min-height:1.3em;font-size:14px;color:var(--accent2);font-weight:600}
+.win .btn.hot.alt{background:var(--card);color:var(--ink);text-shadow:none;border-color:currentColor}
+.win .btn.hot.alt:hover{background:var(--bg2)}
+.win label.opt .lt span{font-weight:400;color:var(--muted)}
+.win .wlb .left{font-size:14px;margin:0}
 .win .foot{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
 .win .foot button{font:600 13px var(--body);background:none;border:0;padding:0;color:var(--ink);text-decoration:underline;cursor:pointer}
 @media (max-width:520px){.win .in{padding:18px 16px 16px}.win .acts .btn{flex:1 1 auto;text-align:center}}
@@ -410,7 +416,14 @@ footer strong{color:var(--ink)}
   .btn{font-size:12px;padding:4px 10px}
   .drive{right:16px;bottom:16px}
   .lines{left:16px;right:16px;width:auto;bottom:calc(16px + var(--meter-h,150px) + 12px)}
-  .dpad{grid-template-columns:repeat(3,54px);grid-template-rows:repeat(2,54px);gap:5px}
+  .dpad{grid-template-columns:repeat(3,60px);grid-template-rows:repeat(2,58px);gap:6px}
+  .dpad button{font-size:24px}
+  /* until the first cut, tell phone visitors what to do */
+  .hero:not(.started) .nudge{display:block;align-self:center;font:700 13px/1 var(--body);color:#fff;background:#1c1612d9;padding:7px 11px;border-radius:99px;white-space:nowrap;animation:nudgeBob 1.4s ease-in-out infinite}
+  .hero:not(.started) .dpad button{animation:dpadPulse 1.4s ease-in-out infinite}
+  .hero:not(.started) .dpad [data-k=l]{animation-delay:.15s}.hero:not(.started) .dpad [data-k=d]{animation-delay:.3s}.hero:not(.started) .dpad [data-k=r]{animation-delay:.45s}
+  @keyframes dpadPulse{0%,100%{box-shadow:0 3px 0 var(--ink),0 0 0 0 color-mix(in srgb,var(--gold) 70%,transparent)}50%{box-shadow:0 3px 0 var(--ink),0 0 0 7px color-mix(in srgb,var(--gold) 0%,transparent)}}
+  @keyframes nudgeBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
   .bubble{right:auto;left:12px;top:41%;max-width:46vw;font-size:15px;padding:8px 12px}
   .bubble::after{display:none}
   .tile{padding-left:10px}
@@ -507,6 +520,7 @@ d.style.background=Math.random()<.5?'#d2b88c':'#3b2c1f';t.appendChild(d);setTime
   </div>
   <div class="drive">
     <div class="hint" id="hint"><span>Drive with</span><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd><span>or</span></div>
+    <div class="nudge" aria-hidden="true">Hold the arrows to mow &darr;</div>
     <div class="dpad" id="dpad" aria-label="Drive the mower">
       <button type="button" data-k="u" aria-label="Up">&uarr;</button>
       <button type="button" data-k="l" aria-label="Left">&larr;</button>
@@ -702,30 +716,21 @@ d.style.background=Math.random()<.5?'#d2b88c':'#3b2c1f';t.appendChild(d);setTime
 </footer>
 <dialog class="win" id="winDlg" aria-labelledby="winTitle">
   <button class="x" type="button" id="winClose" aria-label="Close">&times;</button>
-  <form class="in step" id="step1" method="dialog" novalidate>
-    <span class="mono">Step 1 of 2 · Shaved.</span>
+  <div class="in" id="winBody">
+    <span class="mono">Shaved.</span>
     <h2 id="winTitle">It took you <em id="winTime">0 seconds</em> to shave Marques' hair.</h2>
     <p class="left" id="winLeft">He only has -- days left with his hair, if Tesla delivers.</p>
-    <canvas id="prevCv" width="1200" height="675" aria-label="Preview of your share card"></canvas>
-    <label>Put your name on your time
-      <input id="winName" class="ph-no-capture" type="text" maxlength="24" autocomplete="nickname" placeholder="Your name" required>
-    </label>
-    <p class="msg err" id="nameMsg" role="status"></p>
-    <div class="acts"><button class="btn hot" type="submit" id="winSaveName">Save my time &rarr;</button></div>
-    <div class="foot"><span id="winBest"></span><button type="button" class="again">Restart and go again</button></div>
-  </form>
-  <div class="in step" id="step2" hidden>
-    <span class="mono">Step 2 of 2 · Share it</span>
-    <h2 id="winTitle2">Nice cut, <em id="winWho" class="ph-no-capture">barber</em>.</h2>
-    <p class="left" id="winRank"></p>
     <canvas id="shareCv" width="1200" height="675" aria-label="Your share card"></canvas>
     <div class="acts">
-      <button class="btn hot" type="button" id="winCopy">Copy image</button>
       <button class="btn hot" type="button" id="winPost">Post on X</button>
+      <button class="btn hot alt" type="button" id="winCopy">Copy image</button>
     </div>
     <p class="msg" id="winMsg" role="status"></p>
-    <div class="wlb" id="winLb"><span class="mono" id="winLbLbl">Top barbers</span><ol class="wtops" id="winTops"></ol><ol class="wtops out" id="winMe" hidden></ol></div>
-    <div class="foot"><button type="button" id="winBack">Change name</button><button type="button" class="again">Restart and go again</button></div>
+    <label class="opt"><span class="lt">Your name <span>(optional)</span></span>
+      <input id="winName" class="ph-no-capture" type="text" maxlength="24" autocomplete="nickname" placeholder="Anonymous">
+    </label>
+    <div class="wlb" id="winLb"><span class="mono" id="winLbLbl">Top barbers</span><p class="left" id="winRank"></p><ol class="wtops" id="winTops"></ol><ol class="wtops out" id="winMe" hidden></ol></div>
+    <div class="foot"><span id="winBest"></span><button type="button" class="again">Restart and go again</button></div>
   </div>
 </dialog>
 
@@ -1515,8 +1520,7 @@ const store = { get(k){ try { return localStorage.getItem(k); } catch (e) { retu
 let run = null;
 function cardBlob(){ return new Promise(res => shareCv.toBlob(res, 'image/png')); }
 function tweetText(){ return `I shaved @MKBHD\u2019s head in ${fmtWords(run.ms)} \uD83D\uDC88\n\nHe only has ${run.days} days left with his hair, if @Tesla delivers.\n\nBeat my time: ${SITE}`; }
-function redraw(){ if (run) drawCard(shareCv, { ...run, name: winName.value.trim() }); }
-const step1 = document.getElementById('step1'), step2 = document.getElementById('step2'), nameMsg = document.getElementById('nameMsg');
+const curName = () => winName.value.trim().replace(/\s+/g, ' ') || 'Anonymous';
 // this device's own top five
 function loadTops(){ try { const v = JSON.parse(localStorage.getItem('dmsy-tops') || '[]'); return Array.isArray(v) ? v.filter(t => t && typeof t.ms === 'number').slice(0, 5) : []; } catch (e) { return []; } }
 function saveTop(name, ms, id){
@@ -1550,8 +1554,9 @@ function renderTops(meId){
 }
 renderTops();
 fetch('/api/scores').then(r => r.ok ? r.json() : null).then(j => { if (j && Array.isArray(j.top)) { globalTop = j.top; renderTops(); } }).catch(() => {});
+// every finished run goes on the board straight away as "Anonymous"; typing a name renames that same entry
 async function submitScore(name, ms){
-  const rankEl = document.getElementById('winRank'); rankEl.textContent = '';
+  const r0 = run;
   try {
     const token = await Promise.race([runTok, new Promise(r => setTimeout(() => r(null), 4000))]);
     if (!token) return;
@@ -1559,14 +1564,34 @@ async function submitScore(name, ms){
     const j = await r.json().catch(() => null);
     if (!r.ok || !j) return;
     runTok = null;
-    if (Array.isArray(j.top)) globalTop = j.top;
-    renderTops(j.id);
-    renderWinTops(j.id, j.rank, { name: j.name, ms: j.ms });
+    if (r0 !== run) return;
+    run.lb = { id: j.id, edit: j.edit, name: j.name };
+    showRank(j);
     if (j.rank) track('leaderboard_rank', { rank: j.rank });
-    if (j.rank) rankEl.textContent = j.rank <= 10 ? `You’re #${j.rank} on the leaderboard.` : `You’re #${j.rank}. Beat ${fmtWords(globalTop[globalTop.length - 1].ms)} to make the top 10.`;
+    if (curName() !== name) queueRename();
   } catch (e) {}
 }
-function showStep(n){ step1.hidden = n !== 1; step2.hidden = n !== 2; (n === 1 ? winName : document.getElementById('winCopy')).focus({ preventScroll: true }); }
+function showRank(j){
+  if (Array.isArray(j.top)) globalTop = j.top;
+  renderTops(j.id);
+  renderWinTops(j.id, j.rank, { name: j.name, ms: j.ms });
+  const rankEl = document.getElementById('winRank');
+  rankEl.textContent = !j.rank ? '' : j.rank <= 10 ? `You’re #${j.rank} on the leaderboard.` : `You’re #${j.rank}. Beat ${fmtWords(globalTop[globalTop.length - 1].ms)} to make the top 10.`;
+}
+let renameTimer = 0;
+function queueRename(){
+  clearTimeout(renameTimer);
+  renameTimer = setTimeout(async () => {
+    const lb = run && run.lb, name = curName();
+    if (!lb || !lb.edit || lb.name === name) return;
+    lb.name = name;
+    try {
+      const r = await fetch('/api/rename', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ edit: lb.edit, name }) });
+      const j = await r.json().catch(() => null);
+      if (r.ok && j && run && run.lb === lb) { lb.name = j.name; showRank(j); track('name_submitted'); }
+    } catch (e) {}
+  }, 900);
+}
 async function openWin(ms){
   const best = Number(store.get('dmsy-best')) || 0, isBest = !best || ms < best;
   if (isBest) store.set('dmsy-best', String(Math.round(ms)));
@@ -1576,37 +1601,28 @@ async function openWin(ms){
   document.getElementById('winLeft').textContent = `He only has ${run.days} days left with his hair, if Tesla delivers.`;
   document.getElementById('winBest').innerHTML = isBest ? (best ? 'New personal best <span class="best mono">Best</span>' : 'Your first shave. That’s your time to beat.') : `Your best: ${fmtWords(best)}`;
   winName.value = store.get('dmsy-name') || '';
-  winMsg.textContent = ''; nameMsg.textContent = '';
+  winMsg.textContent = ''; document.getElementById('winRank').textContent = '';
   keys.clear(); buzzSet(0);
   const side = matchMedia('(min-width: 761px)').matches;
   winDlg.classList.toggle('side', side);
   if (!winDlg.open) { if (side) winDlg.show(); else winDlg.showModal(); }
   hero.classList.add('finished');
-  showStep(1);
+  renderWinTops(null);
+  saveTop(curName(), run.ms, run.id); if (!Array.isArray(globalTop)) { renderTops(run.id); renderWinTops(run.id); }
+  if (!run.sent) { run.sent = true; submitScore(curName(), run.ms); }
   fontsReady().then(drawPreview);
   drawPreview();
-}
-const prevCv = document.getElementById('prevCv');
-let prevRaf = 0;
-function drawPreview(){ cancelAnimationFrame(prevRaf); prevRaf = requestAnimationFrame(() => { if (run) drawCard(prevCv, { ...run, name: winName.value.trim().replace(/\s+/g, ' ') || 'Your name' }); }); }
-step1.addEventListener('submit', async e => {
-  e.preventDefault();
-  const name = winName.value.trim().replace(/\s+/g, ' ');
-  if (!name) { nameMsg.textContent = 'Add your name to save your time.'; winName.focus(); return; }
-  nameMsg.textContent = '';
-  store.set('dmsy-name', name);
-  track('name_submitted');
-  saveTop(name, run.ms, run.id); if (!Array.isArray(globalTop)) renderTops(run.id);
-  renderWinTops(Array.isArray(globalTop) ? null : run.id);
-  if (!run.sent) { run.sent = true; submitScore(name, run.ms); }
-  document.getElementById('winWho').textContent = name;
-  await fontsReady();
-  drawCard(shareCv, { ...run, name });
-  showStep(2);
   track('share_card_shown');
+}
+let prevRaf = 0;
+function drawPreview(){ cancelAnimationFrame(prevRaf); prevRaf = requestAnimationFrame(() => { if (run) drawCard(shareCv, { ...run, name: curName() }); }); }
+winName.addEventListener('input', () => {
+  drawPreview();
+  const n = winName.value.trim();
+  if (n) store.set('dmsy-name', n);
+  if (run) { saveTop(curName(), run.ms, run.id); if (!Array.isArray(globalTop)) { renderTops(run.id); renderWinTops(run.id); } }
+  queueRename();
 });
-document.getElementById('winBack').addEventListener('click', () => showStep(1));
-winName.addEventListener('input', () => { if (winName.value.trim()) nameMsg.textContent = ''; drawPreview(); });
 document.getElementById('winClose').addEventListener('click', () => winDlg.close());
 winDlg.addEventListener('close', () => hero.classList.remove('finished'));
 addEventListener('keydown', e => { if (e.key === 'Escape' && winDlg.open && winDlg.classList.contains('side')) winDlg.close(); });
@@ -1764,10 +1780,19 @@ addEventListener('keydown', e => {
 addEventListener('keyup', e => { const k = KEYMAP[e.code]; if (k) keys.delete(k); });
 addEventListener('blur', () => keys.clear());
 // on-screen arrows for touch screens
+let dpadTapped = false;
 for (const b of document.querySelectorAll('#dpad button')) {
   const k = b.dataset.k;
-  b.addEventListener('pointerdown', e => { e.preventDefault(); keys.add(k); b.classList.add('on'); b.setPointerCapture?.(e.pointerId); });
-  for (const ev of ['pointerup', 'pointercancel', 'lostpointercapture']) b.addEventListener(ev, () => { keys.delete(k); b.classList.remove('on'); });
+  let downAt = 0, upT = 0;
+  b.addEventListener('pointerdown', e => {
+    e.preventDefault(); clearTimeout(upT); downAt = performance.now();
+    keys.add(k); b.classList.add('on'); b.setPointerCapture?.(e.pointerId);
+    if (!dpadTapped) { dpadTapped = true; track('dpad_first_tap', { key: k, touch: e.pointerType === 'touch' }); }
+  });
+  // a quick tap still drives for a moment, so tapping instead of holding isn't a dead button
+  const release = () => { const held = performance.now() - downAt; clearTimeout(upT); upT = setTimeout(() => { keys.delete(k); b.classList.remove('on'); }, Math.max(0, 350 - held)); };
+  for (const ev of ['pointerup', 'pointercancel', 'lostpointercapture']) b.addEventListener(ev, release);
+  b.addEventListener('contextmenu', e => e.preventDefault());
 }
 document.getElementById('regrow').addEventListener('click', regrowAll);
 
@@ -1922,7 +1947,7 @@ function frame(){
       }
     }
   }
-  if (cutNow) { lastCut = performance.now(); if (!gameT0) { gameT0 = lastCut; lbStart(); } }
+  if (cutNow) { lastCut = performance.now(); if (!gameT0) { gameT0 = lastCut; lbStart(); hero.classList.add('started'); } }
   if (changed) {
     hairDirty();
     mowedCount = countCut();

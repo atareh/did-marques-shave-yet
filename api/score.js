@@ -1,5 +1,5 @@
 const crypto = require('crypto');
-const { configured, redis, verify, cleanName, ipOf, send, readJson, topTen, KEY } = require('./_lb');
+const { configured, redis, sign, verify, cleanName, ipOf, send, readJson, topTen, KEY } = require('./_lb');
 module.exports = async (req, res) => {
   if (req.method !== 'POST') return send(res, 405, { error: 'POST only' });
   if (!configured()) return send(res, 503, { error: 'leaderboard not configured' });
@@ -25,8 +25,10 @@ module.exports = async (req, res) => {
     const name = cleanName(body.name);
     const id = crypto.randomBytes(6).toString('base64url');
     const member = JSON.stringify({ id, name, date: new Date(now).toISOString().slice(0, 10) });
-    const [, rank] = await redis([['ZADD', KEY, String(ms), member], ['ZRANK', KEY, member], ['ZREMRANGEBYRANK', KEY, '2000', '-1']]);
-    send(res, 200, { id, name, ms, rank: rank == null ? null : rank + 1, top: await topTen() });
+    const [, rank] = await redis([['ZADD', KEY, String(ms), member], ['ZRANK', KEY, member], ['ZREMRANGEBYRANK', KEY, '2000', '-1'], ['SET', 'dmsy:m:' + id, member, 'EX', '7200']]);
+    // a signed edit pass lets this browser rename its own entry for the next two hours
+    const edit = sign({ id, x: now + 7200000 });
+    send(res, 200, { id, name, ms, rank: rank == null ? null : rank + 1, edit, top: await topTen() });
   } catch (e) {
     send(res, 500, { error: 'Leaderboard unavailable.' });
   }
